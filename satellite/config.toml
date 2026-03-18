@@ -1,0 +1,57 @@
+# Satellite OCS Configuration File
+# Switch between localhost and WiFi mode here
+
+[network]
+# Mode: "localhost" or "wifi"
+mode = "localhost"
+
+[network.localhost]
+satellite_addr = "127.0.0.1:8001"
+ground_addr = "127.0.0.1:8002"
+
+[network.wifi]
+# UPDATE THESE DURING INTEGRATION WITH YOUR PARTNER
+satellite_addr = "0.0.0.0:8001"          # Listen on all interfaces
+ground_addr = "192.168.1.105:8002"       # Partner's IP - CHANGE THIS!
+
+[sensors]
+# Sensor 1: Thermal (Critical)
+thermal_interval_ms = 100
+thermal_priority = 3
+
+# Sensor 2: Attitude (Medium)
+attitude_interval_ms = 200
+attitude_priority = 2
+
+# Sensor 3: Power (Low)
+power_interval_ms = 500
+power_priority = 1
+
+[system]
+# Buffer size for sensor readings
+buffer_size = 100
+
+# Fault injection frequency (iterations)
+fault_injection_every = 600  # Every 60s at 100ms interval
+
+# Deadlines (milliseconds)
+downlink_deadline_ms = 30
+urgent_command_deadline_ms = 2
+thermal_jitter_threshold_ms = 1.0
+
+# Dead man's switch timeout (seconds)
+dead_mans_switch_timeout_s = 2
+
+# CPU utilization reporting interval (seconds)
+metrics_report_interval_s = 10
+
+# Degraded mode threshold
+buffer_degraded_threshold_percent = 80.0
+
+[logging]
+# Log level: trace, debug, info, warn, error
+level = "info"
+
+# Log to file
+log_to_file = true
+log_file_path = "logs/satellite.log"
