@@ -1,0 +1,14 @@
+/mnt/c/Users/JY/Desktop/Learn/RTS-Assignment/RTS Assignment/gcs/target/debug/deps/serde-d85535af1d24dfc6.d: /home/dababy11/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /home/dababy11/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /home/dababy11/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /home/dababy11/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /home/dababy11/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /mnt/c/Users/JY/Desktop/Learn/RTS-Assignment/RTS\ Assignment/gcs/target/debug/build/serde-acd5b2669130c5a6/out/private.rs
+
+/mnt/c/Users/JY/Desktop/Learn/RTS-Assignment/RTS Assignment/gcs/target/debug/deps/libserde-d85535af1d24dfc6.rlib: /home/dababy11/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /home/dababy11/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /home/dababy11/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /home/dababy11/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /home/dababy11/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /mnt/c/Users/JY/Desktop/Learn/RTS-Assignment/RTS\ Assignment/gcs/target/debug/build/serde-acd5b2669130c5a6/out/private.rs
+
+/mnt/c/Users/JY/Desktop/Learn/RTS-Assignment/RTS Assignment/gcs/target/debug/deps/libserde-d85535af1d24dfc6.rmeta: /home/dababy11/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /home/dababy11/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /home/dababy11/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /home/dababy11/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /home/dababy11/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /mnt/c/Users/JY/Desktop/Learn/RTS-Assignment/RTS\ Assignment/gcs/target/debug/build/serde-acd5b2669130c5a6/out/private.rs
+
+/home/dababy11/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs:
+/home/dababy11/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs:
+/home/dababy11/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs:
+/home/dababy11/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs:
+/home/dababy11/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs:
+/mnt/c/Users/JY/Desktop/Learn/RTS-Assignment/RTS\ Assignment/gcs/target/debug/build/serde-acd5b2669130c5a6/out/private.rs:
+
+# env-dep:OUT_DIR=/mnt/c/Users/JY/Desktop/Learn/RTS-Assignment/RTS Assignment/gcs/target/debug/build/serde-acd5b2669130c5a6/out
