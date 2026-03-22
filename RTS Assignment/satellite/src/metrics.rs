@@ -6,6 +6,7 @@ use tokio::sync::Mutex;
 use tokio::time::{interval, Duration};
 use tracing::{info, warn};
 
+
 #[derive(Debug, Default)]
 pub struct Metrics {
     // Sensor metrics
@@ -31,6 +32,8 @@ pub struct Metrics {
     // Fault tracking
     pub fault_count: u64,
     pub consecutive_thermal_misses: u8,
+    pub last_fault_description: String,  // e.g. "CORRUPTED | Sensor 1 (Thermal) | value: 999.9"
+    pub last_fault_time: String,         // e.g. "14:32:05.123"
     
     // CPU utilization
     pub cpu_active_time_ms: u128,
@@ -48,6 +51,8 @@ impl Metrics {
         Self {
             jitter_samples: Vec::with_capacity(100),
             drift_samples: Vec::with_capacity(100),
+            last_fault_description: String::new(),
+            last_fault_time: String::new(),
             ..Default::default()
         }
     }
@@ -209,20 +214,22 @@ pub fn spawn_reporter(
             // Alerts
             let mut alerts = String::new();
             if m.buffer_fill_percentage > 80.0 {
-                alerts.push_str(&format!("  [!] DEGRADED MODE - buffer at {:.1}%
-", m.buffer_fill_percentage));
+                alerts.push_str(&format!("  [!] DEGRADED MODE - buffer at {:.1}%\n", m.buffer_fill_percentage));
             }
             if m.max_jitter_ms > 1.0 {
-                alerts.push_str(&format!("  [!] Jitter exceeded 1ms: {:.3}ms
-", m.max_jitter_ms));
+                alerts.push_str(&format!("  [!] Jitter exceeded 1ms: {:.3}ms\n", m.max_jitter_ms));
             }
             if m.consecutive_thermal_misses >= 3 {
-                alerts.push_str(&format!("  [!] Thermal missed {} consecutive readings
-", m.consecutive_thermal_misses));
+                alerts.push_str(&format!("  [!] Thermal missed {} consecutive readings\n", m.consecutive_thermal_misses));
+            }
+            if !m.last_fault_description.is_empty() {
+                alerts.push_str(&format!(
+                    "  [F] Last fault #{}: {} @ {}\n",
+                    m.fault_count, m.last_fault_description, m.last_fault_time
+                ));
             }
             if alerts.is_empty() {
-                alerts.push_str("  All systems nominal
-");
+                alerts.push_str("  All systems nominal\n");
             }
 
             // Build as one string then print atomically
@@ -266,6 +273,7 @@ pub fn spawn_reporter(
                 alerts = alerts,
             );
 
+            let _lock = crate::print_lock::acquire();
             eprintln!("{}", report);
         }
     })

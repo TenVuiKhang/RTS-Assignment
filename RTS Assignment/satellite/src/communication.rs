@@ -136,26 +136,36 @@ pub fn spawn_uplink(
         info!("   Dead man's switch: {} seconds", dead_mans_switch_timeout.as_secs());
         
         let mut buffer = vec![0u8; 65535]; // Max UDP packet size
-        
+
+        // Latch: true while contact is lost. We record ONE fault on the first
+        // timeout and stay silent until contact is restored, preventing the
+        // 2-second tick from inflating fault_count by 30/minute.
+        let mut contact_lost = false;
+
         loop {
             // Lab 8 Exercise 2: Dead Man's Switch timeout
             match timeout(dead_mans_switch_timeout, socket.recv_from(&mut buffer)).await {
                 Ok(Ok((len, addr))) => {
+                    if contact_lost {
+                        info!("✅ Ground contact restored from {}", addr);
+                        contact_lost = false;
+                    }
                     handle_command(&buffer[..len], addr, &socket, &metrics, urgent_deadline_ms).await;
                 }
                 Ok(Err(e)) => {
                     error!("❌ Socket receive error: {}", e);
                 }
                 Err(_) => {
-                    // TIMEOUT - Dead Man's Switch triggered!
-                    error!(
-                        "🚨 CRITICAL ALERT: No ground contact for {} seconds - SENSOR DISCONNECTED",
-                        dead_mans_switch_timeout.as_secs()
-                    );
-                    
-                    metrics.lock().await.fault_count += 1;
-                    
-                    // In a real system: enter safe mode, trigger alerts, etc.
+                    if !contact_lost {
+                        // First timeout only — log and count once
+                        error!(
+                            "🚨 CRITICAL ALERT: No ground contact for {} seconds - LOSS OF SIGNAL",
+                            dead_mans_switch_timeout.as_secs()
+                        );
+                        metrics.lock().await.fault_count += 1;
+                        contact_lost = true;
+                    }
+                    // While contact remains lost, subsequent ticks are silent
                 }
             }
         }
