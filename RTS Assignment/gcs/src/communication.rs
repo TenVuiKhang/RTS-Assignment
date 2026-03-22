@@ -47,7 +47,7 @@ pub fn spawn_receiver(
                     } else { 0.0 };
                     expected_arrival = arrived_at + Duration::from_millis(EXPECTED_INTERVAL_MS);
                     if drift_ms > 5.0 {
-                        warn!("⚠️  Reception drift: {:.3}ms", drift_ms);
+                        warn!("[WARN]   Reception drift: {:.3}ms", drift_ms);
                     }
 
                     // ── Decode within 3ms ─────────────────────────────────
@@ -58,7 +58,7 @@ pub fn spawn_receiver(
                             let latency_ms   = drift_ms + decode_ms;
 
                             if decode_ms > DECODE_DEADLINE_MS {
-                                warn!("⚠️  Decode {:.3}ms > {}ms deadline", decode_ms, DECODE_DEADLINE_MS);
+                                warn!("[WARN]   Decode {:.3}ms > {}ms deadline", decode_ms, DECODE_DEADLINE_MS);
                                 metrics.lock().await.missed_decode_deadlines += 1;
                             }
 
@@ -66,7 +66,7 @@ pub fn spawn_receiver(
                             if let Some(prev) = last_packet_id {
                                 if pkt.packet_id > prev + 1 {
                                     let gap = pkt.packet_id - (prev + 1);
-                                    warn!("⚠️  Gap: {} packet(s) missing after #{}", gap, prev);
+                                    warn!("[WARN]   Gap: {} packet(s) missing after #{}", gap, prev);
                                     send_rerequest(&socket, &sat, prev + 1, pkt.packet_id - 1,
                                         &mut rerequest_id, &metrics).await;
                                     metrics.lock().await.sequence_gaps += gap;
@@ -83,7 +83,7 @@ pub fn spawn_receiver(
                                 m.record_reception_latency(latency_ms);
                             }
 
-                            debug!("📥 Pkt #{} from {} | decode {:.3}ms | drift {:.3}ms",
+                            debug!("[DEBUG]   Pkt #{} from {} | decode {:.3}ms | drift {:.3}ms",
                                 pkt.packet_id, src, decode_ms, drift_ms);
 
                             if telem_tx.send(pkt).await.is_err() {
@@ -92,19 +92,19 @@ pub fn spawn_receiver(
                             }
                         }
                         Err(e) => {
-                            error!("❌ Decode error from {}: {}", src, e);
+                            error!("[ERROR]   Decode error from {}: {}", src, e);
                             consecutive_failures += 1;
                             metrics.lock().await.decode_errors += 1;
 
                             if consecutive_failures >= LOSS_OF_CONTACT_THRESHOLD {
-                                error!("🚨 LOSS OF CONTACT: {} consecutive failures", consecutive_failures);
+                                error!("[ERROR]   LOSS OF CONTACT: {} consecutive failures", consecutive_failures);
                                 metrics.lock().await.loss_of_contact_events += 1;
                                 consecutive_failures = 0;
                             }
                         }
                     }
                 }
-                Err(e) => error!("❌ Socket error: {}", e),
+                Err(e) => error!("[ERROR]   Socket error: {}", e),
             }
         }
     })
@@ -129,7 +129,7 @@ async fn send_rerequest(
     };
     if let Ok(bytes) = cmd.to_bytes() {
         if socket.send_to(&bytes, satellite_addr).await.is_ok() {
-            info!("📤 Re-request #{}-{} (cmd #{})", from_id, to_id, id);
+            info!("[INFO]   Re-request #{}-{} (cmd #{})", from_id, to_id, id);
             metrics.lock().await.rerequests_sent += 1;
             *id += 1;
         }

@@ -32,7 +32,7 @@ pub fn spawn_fault_manager(
                 TelemetryPayload::FaultAlert { fault_type, severity, description, .. } => {
                     let fault_recv = Instant::now();
 
-                    error!("🚨 FAULT RECEIVED: {:?} [{:?}] — {}", fault_type, severity, description);
+                    error!("[WARN] FAULT RECEIVED: {:?} [{:?}] — {}", fault_type, severity, description);
 
                     // Engage interlock immediately
                     let interlock_start = Instant::now();
@@ -43,36 +43,36 @@ pub fn spawn_fault_manager(
                         let mut m = metrics.lock().await;
                         m.faults_received += 1;
                         m.record_interlock_latency(interlock_latency);
-                        warn!("🔒 Interlock engaged in {:.3}ms", interlock_latency);
+                        warn!("[INTERLOCK] Interlock engaged in {:.3}ms", interlock_latency);
                     }
 
                     // Build response command based on fault type
                     let response_cmd = match fault_type {
                         FaultType::ThermalAnomaly => {
-                            warn!("🌡️  Thermal anomaly — requesting sensor interval reduction");
+                            warn!("Thermal anomaly — requesting sensor interval reduction");
                             Some(make_urgent(cmd_id, CommandPayload::SetSensorInterval {
                                 sensor_id: 1,
                                 interval_ms: 50,
                             }))
                         }
                         FaultType::BufferOverflow => {
-                            warn!("📦 Buffer overflow — requesting degraded mode");
+                            warn!("Buffer overflow — requesting degraded mode");
                             Some(make_urgent(cmd_id, CommandPayload::SetMode {
                                 mode: crate::protocol::SystemMode::Degraded,
                             }))
                         }
                         FaultType::CommunicationTimeout => {
-                            warn!("📡 Comms timeout — requesting subsystem reset");
+                            warn!("Comms timeout — requesting subsystem reset");
                             Some(make_urgent(cmd_id, CommandPayload::ResetSubsystem {
                                 subsystem: "communication".to_string(),
                             }))
                         }
                         FaultType::ConsecutiveDataLoss => {
-                            warn!("⚠️  Consecutive data loss — requesting fault clear");
+                            warn!("Consecutive data loss — requesting fault clear");
                             Some(make_urgent(cmd_id, CommandPayload::ClearFault { fault_id: 0 }))
                         }
                         _ => {
-                            warn!("⚠️  Unhandled fault type: {:?} — health check requested", fault_type);
+                            warn!("Unhandled fault type: {:?} — health check requested", fault_type);
                             Some(make_urgent(cmd_id, CommandPayload::HealthCheck))
                         }
                     };
@@ -80,7 +80,7 @@ pub fn spawn_fault_manager(
                     // Check fault response deadline (100 ms)
                     let response_latency = fault_recv.elapsed().as_secs_f64() * 1000.0;
                     if response_latency > FAULT_RESPONSE_DEADLINE_MS {
-                        error!("🚨 CRITICAL GROUND ALERT: Fault response {:.3}ms > {}ms deadline!",
+                        error!("[ERROR]   CRITICAL GROUND ALERT: Fault response {:.3}ms > {}ms deadline!",
                             response_latency, FAULT_RESPONSE_DEADLINE_MS);
                         metrics.lock().await.missed_fault_response_deadlines += 1;
                     }
@@ -98,9 +98,9 @@ pub fn spawn_fault_manager(
                     // For lesser severity, lift immediately after response dispatch
                     if !matches!(severity, AlertSeverity::Critical) {
                         INTERLOCK_ACTIVE.store(false, Ordering::SeqCst);
-                        info!("🔓 Interlock released (non-critical fault)");
+                        info!("[INFO]   Interlock released (non-critical fault)");
                     } else {
-                        warn!("🔒 Interlock remains ACTIVE until ClearFault ACK (critical severity)");
+                        warn!("[WARN]   Interlock remains ACTIVE until ClearFault ACK (critical severity)");
                     }
                 }
 
@@ -109,7 +109,7 @@ pub fn spawn_fault_manager(
                     if matches!(mode, crate::protocol::SystemMode::Normal) {
                         if INTERLOCK_ACTIVE.load(Ordering::SeqCst) {
                             INTERLOCK_ACTIVE.store(false, Ordering::SeqCst);
-                            info!("🔓 Interlock released — OCS reports Normal mode");
+                            info!("[INFO]   Interlock released — OCS reports Normal mode");
                             metrics.lock().await.interlocks_released += 1;
                         }
                     }
@@ -119,7 +119,7 @@ pub fn spawn_fault_manager(
                 TelemetryPayload::CommandAck { success, .. } => {
                     if *success && INTERLOCK_ACTIVE.load(Ordering::SeqCst) {
                         INTERLOCK_ACTIVE.store(false, Ordering::SeqCst);
-                        info!("🔓 Interlock released after successful command ACK");
+                        info!("[INFO]   Interlock released after successful command ACK");
                         metrics.lock().await.interlocks_released += 1;
                     }
                 }
@@ -128,6 +128,6 @@ pub fn spawn_fault_manager(
             }
         }
 
-        info!("Fault manager task terminated");
+        info!("[INFO]   Fault manager task terminated");
     })
 }

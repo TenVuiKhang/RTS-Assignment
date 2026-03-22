@@ -38,8 +38,8 @@ pub fn spawn_scheduler(
 
         let mut cmd_id = 5_000u64;  // scheduler commands start at 5000
 
-        info!("📅 GCS scheduler started");
-        info!("   Thermal check: {}ms  Antenna check: {}ms  Health ping: {}ms",
+        info!("[INFO]   GCS scheduler started");
+        info!("[INFO]   Thermal check: {}ms  Antenna check: {}ms  Health ping: {}ms",
             THERMAL_PERIOD_MS, ANTENNA_PERIOD_MS, HEALTH_PERIOD_MS);
 
         loop {
@@ -99,10 +99,10 @@ async fn enqueue(
         scheduled_at: Instant::now(),
         deadline_ms:  deadline,
     };
-    debug!("📋 Scheduling cmd #{}", id);
+    debug!("[DEBUG]   Scheduling cmd #{}", id);
     match tx.try_send(sc) {
         Ok(_) => { metrics.lock().await.commands_scheduled += 1; *id += 1; }
-        Err(_) => { warn!("⚠️  Scheduler channel full — cmd #{} dropped", id); metrics.lock().await.scheduler_drops += 1; }
+        Err(_) => { warn!("[WARN]   Scheduler channel full — cmd #{} dropped", id); metrics.lock().await.scheduler_drops += 1; }
     }
 }
 
@@ -110,7 +110,7 @@ async fn record_drift(metrics: &Arc<Mutex<GcsMetrics>>, name: &str, actual: Inst
     let drift_ms = if actual > expected {
         actual.duration_since(expected).as_secs_f64() * 1000.0
     } else { 0.0 };
-    if drift_ms > 1.0 { warn!("⚠️  GCS '{}' drift: {:.3}ms", name, drift_ms); }
+    if drift_ms > 1.0 { warn!("[WARN]   GCS '{}' drift: {:.3}ms", name, drift_ms); }
     metrics.lock().await.record_scheduler_drift(drift_ms);
 }
 

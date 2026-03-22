@@ -1,6 +1,6 @@
-// src/protocol.rs
+
 // Shared protocol definitions between Satellite and Ground Control
-// BOTH STUDENTS MUST USE IDENTICAL PROTOCOL
+
 
 use serde::{Deserialize, Serialize};
 use chrono::{DateTime, Utc};
@@ -82,9 +82,9 @@ pub enum AlertSeverity {
     Critical,
 }
 
-// =============================================================================
+// ==========================================
 // COMMANDS (Ground → Satellite)
-// =============================================================================
+
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CommandPacket {
@@ -139,9 +139,8 @@ pub enum CommandPayload {
     },
 }
 
-// =============================================================================
+// ==========================================
 // SERIALIZATION HELPERS
-// =============================================================================
 
 impl TelemetryPacket {
     /// Serialize to JSON bytes for UDP transmission
@@ -179,9 +178,8 @@ impl CommandPacket {
     }
 }
 
-// =============================================================================
+// ==========================================
 // TESTS
-// =============================================================================
 
 #[cfg(test)]
 mod tests {

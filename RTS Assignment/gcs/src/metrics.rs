@@ -130,7 +130,7 @@ impl GcsMetrics {
 
     pub fn log_rejection(&mut self, record: RejectionRecord) {
         if self.rejection_log.len() >= 100 { self.rejection_log.remove(0); }
-        warn!("REJECTION: {}", record);
+        warn!("[WARN]   REJECTION: {}", record);
         self.rejection_log.push(record);
     }
 
@@ -179,10 +179,10 @@ pub fn spawn_reporter(
             ticker.tick().await;
             let m = metrics.lock().await;
             info!("=================================================");
-            info!("📊 GCS METRICS:\n{}", m.summary());
+            info!("GCS METRICS:\n{}", m.summary());
             info!("=================================================");
             if m.max_reception_drift_ms > 5.0 {
-                warn!("⚠️  High reception drift: {:.3}ms", m.max_reception_drift_ms);
+                warn!("[WARN]   High reception drift: {:.3}ms", m.max_reception_drift_ms);
             }
         }
     })

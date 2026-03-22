@@ -24,10 +24,10 @@ pub fn spawn_uplink(
     tokio::spawn(async move {
         let socket = match UdpSocket::bind("0.0.0.0:0").await {
             Ok(s)  => s,
-            Err(e) => { error!("Failed to create uplink socket: {}", e); return; }
+            Err(e) => { error!("[ERROR]   Failed to create uplink socket: {}", e); return; }
         };
 
-        info!("📤 Command uplink ready → {}", addr);
+        info!("[INFO]   Command uplink ready → {}", addr);
 
         while let Some(scheduled) = cmd_rx.recv().await {
             let cmd       = &scheduled.packet;
@@ -42,7 +42,7 @@ pub fn spawn_uplink(
             // ── Uplink jitter (scheduler enqueue → now) ───────────────────
             let jitter_ms = measure_uplink_jitter(&scheduled);
             if jitter_ms > 5.0 {
-                warn!("⚠️  Uplink jitter {:.3}ms for cmd #{}", jitter_ms, cmd.command_id);
+                warn!("[WARN]   Uplink jitter {:.3}ms for cmd #{}", jitter_ms, cmd.command_id);
             }
             metrics.lock().await.record_uplink_jitter(jitter_ms);
 
@@ -55,7 +55,7 @@ pub fn spawn_uplink(
                             let dispatch_ms = send_start.elapsed().as_secs_f64() * 1000.0;
 
                             if is_urgent && dispatch_ms > URGENT_DEADLINE_MS {
-                                warn!("⚠️  Urgent cmd #{} dispatch {:.3}ms > {}ms",
+                                warn!("[WARN]   Urgent cmd #{} dispatch {:.3}ms > {}ms",
                                     cmd.command_id, dispatch_ms, URGENT_DEADLINE_MS);
                                 metrics.lock().await.missed_urgent_deadlines += 1;
                             }
@@ -66,22 +66,22 @@ pub fn spawn_uplink(
                                 m.record_dispatch_latency(dispatch_ms);
                             }
 
-                            debug!("📤 Sent cmd #{} ({:?}) {} bytes | dispatch {:.3}ms | jitter {:.3}ms",
+                            debug!("[DEBUG]   Sent cmd #{} ({:?}) {} bytes | dispatch {:.3}ms | jitter {:.3}ms",
                                 cmd.command_id, cmd.urgency, n, dispatch_ms, jitter_ms);
 
                             await_ack(&socket, cmd.command_id, &metrics).await;
                         }
                         Err(e) => {
-                            error!("❌ Send cmd #{} failed: {}", cmd.command_id, e);
+                            error!("[ERROR]   Send cmd #{} failed: {}", cmd.command_id, e);
                             metrics.lock().await.commands_failed += 1;
                         }
                     }
                 }
-                Err(e) => error!("❌ Serialize cmd #{} failed: {}", cmd.command_id, e),
+                Err(e) => error!("[ERROR]   Serialize cmd #{} failed: {}", cmd.command_id, e),
             }
         }
 
-        info!("Uplink task terminated");
+        info!("[INFO]   Uplink task terminated");
     })
 }
 
@@ -93,9 +93,9 @@ async fn await_ack(socket: &UdpSocket, cmd_id: u64, metrics: &Arc<Mutex<GcsMetri
                 if let TelemetryPayload::CommandAck { command_id, success, execution_time_ms, message } = pkt.payload {
                     if command_id == cmd_id {
                         if success {
-                            info!("✅ ACK cmd #{}: {:.3}ms — {}", cmd_id, execution_time_ms, message);
+                            info!("[INFO]   ACKNOWLEDGE cmd #{}: {:.3}ms — {}", cmd_id, execution_time_ms, message);
                         } else {
-                            warn!("❌ NACK cmd #{}: {}", cmd_id, message);
+                            warn!("[WARN]   NOT ACKNOWLEDGED cmd #{}: {}", cmd_id, message);
                             metrics.lock().await.commands_nacked += 1;
                         }
                         metrics.lock().await.acks_received += 1;
@@ -103,9 +103,9 @@ async fn await_ack(socket: &UdpSocket, cmd_id: u64, metrics: &Arc<Mutex<GcsMetri
                 }
             }
         }
-        Ok(Err(e)) => debug!("ACK recv error cmd #{}: {}", cmd_id, e),
+        Ok(Err(e)) => debug!("[DEBUG]   ACKNOWLEDGE recv error cmd #{}: {}", cmd_id, e),
         Err(_)     => {
-            warn!("⏱️  No ACK for cmd #{} within {}ms", cmd_id, ACK_TIMEOUT_MS);
+            warn!("[WARN]   No ACKNOWLEDGE for cmd #{} within {}ms", cmd_id, ACK_TIMEOUT_MS);
             metrics.lock().await.acks_missed += 1;
         }
     }

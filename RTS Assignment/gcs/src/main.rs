@@ -50,7 +50,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         gcs_bind_addr, satellite_addr, telem_tx, metrics.clone(),
     );
 
-    // ── 2. Command brain ──────────────────────────────────────────────────
+    // ── 2. Command Center ──────────────────────────────────────────────────
     let brain_metrics   = metrics.clone();
     let brain_interlock = interlock_state.clone();
     let brain_task = tokio::spawn(async move {

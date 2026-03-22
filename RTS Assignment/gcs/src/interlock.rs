@@ -34,7 +34,7 @@ impl InterlockState {
 
     pub fn engage(&mut self, reason: &str, fault: ActiveFault) {
         if !self.active {
-            warn!("🔒 INTERLOCK ENGAGED: {}", reason);
+            warn!("[WARN]   INTERLOCK ENGAGED: {}", reason);
             self.active       = true;
             self.reason       = reason.to_string();
             self.engaged_at   = Some(Instant::now());
@@ -50,7 +50,7 @@ impl InterlockState {
         self.reason       = String::new();
         self.engaged_at   = None;
         self.active_fault = None;
-        info!("🔓 INTERLOCK RELEASED (held {:.3}ms)", held);
+        info!("[INFO]   INTERLOCK RELEASED (held {:.3}ms)", held);
         held
     }
 }
@@ -68,7 +68,7 @@ pub async fn check(
 ) -> InterlockDecision {
     // Emergency always passes
     if matches!(cmd.urgency, CommandUrgency::Emergency) {
-        info!("⚡ Emergency cmd #{} bypasses interlock", cmd.command_id);
+        info!("[INFO]   ⚡ Emergency cmd #{} bypasses interlock", cmd.command_id);
         return InterlockDecision::Approved;
     }
 
@@ -97,7 +97,7 @@ pub async fn check(
     m.record_interlock_latency(interlock_latency);
     m.log_rejection(record);
 
-    warn!("🚫 BLOCKED cmd #{} ({:?}) — {} | latency {:.3}ms",
+    warn!("[WARN]   BLOCKED cmd #{} ({:?}) — {} | latency {:.3}ms",
         cmd.command_id, cmd.urgency, reason, interlock_latency);
 
     InterlockDecision::Blocked { reason }
@@ -117,7 +117,7 @@ pub async fn engage(
     m.record_interlock_latency(latency);
 
     if latency > FAULT_RESPONSE_DEADLINE_MS {
-        error!("🚨 CRITICAL: Interlock engage took {:.3}ms > {}ms deadline!",
+        error!("[ERROR]   CRITICAL: Interlock engage took {:.3}ms > {}ms deadline!",
             latency, FAULT_RESPONSE_DEADLINE_MS);
         m.missed_fault_response_deadlines += 1;
     }
@@ -130,7 +130,7 @@ pub async fn release(
     let held = state.lock().await.release();
     let mut m = metrics.lock().await;
     m.interlocks_released += 1;
-    info!("Interlock held for {:.3}ms", held);
+    info!("[INFO]   Interlock held for {:.3}ms", held);
 }
 
 fn describe(cmd: &CommandPacket) -> String {

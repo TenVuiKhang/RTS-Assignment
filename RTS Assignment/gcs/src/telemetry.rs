@@ -56,7 +56,7 @@ pub fn spawn_receiver(
                             let decode_ms = decode_start.elapsed().as_secs_f64() * 1000.0;
 
                             if decode_ms > DECODE_DEADLINE_MS {
-                                warn!("⚠️  Decode deadline missed: {:.3}ms > {}ms", decode_ms, DECODE_DEADLINE_MS);
+                                warn!("[WARN]   Decode deadline missed: {:.3}ms > {}ms", decode_ms, DECODE_DEADLINE_MS);
                                 metrics.lock().await.missed_decode_deadlines += 1;
                             }
 
@@ -64,7 +64,7 @@ pub fn spawn_receiver(
                             if let Some(prev) = last_packet_id {
                                 let gap = pkt.packet_id.wrapping_sub(prev + 1);
                                 if gap > 0 {
-                                    warn!("⚠️  Sequence gap: missed {} packet(s) after #{}", gap, prev);
+                                    warn!("[WARN]   Sequence gap: missed {} packet(s) after #{}", gap, prev);
                                     let mut m = metrics.lock().await;
                                     m.sequence_gaps += gap;
                                 }
@@ -85,33 +85,33 @@ pub fn spawn_receiver(
 
                             // Log fault alerts from OCS
                             if let TelemetryPayload::FaultAlert { ref description, ref severity, .. } = pkt.payload {
-                                warn!("🛰️  OCS FAULT [{:?}]: {}", severity, description);
+                                warn!("[WARN]   OCS FAULT [{:?}]: {}", severity, description);
                             }
 
                             // Forward to fault manager
                             if let Err(e) = telem_tx.send(pkt).await {
-                                error!("Telemetry channel closed: {}", e);
+                                error!("[ERROR]   Telemetry channel closed: {}", e);
                                 break;
                             }
                         }
                         Err(e) => {
-                            error!("❌ Decode error from {}: {}", src, e);
+                            error!("[ERROR]   Decode error from {}: {}", src, e);
                             consecutive_fails += 1;
                             metrics.lock().await.decode_errors += 1;
 
                             if consecutive_fails >= LOSS_OF_CONTACT_THRESHOLD {
-                                error!("🚨 LOSS OF CONTACT: {} consecutive decode failures", consecutive_fails);
+                                error!("[ERROR]   LOSS OF CONTACT: {} consecutive decode failures", consecutive_fails);
                                 metrics.lock().await.loss_of_contact_events += 1;
                             }
                         }
                     }
                 }
                 Err(e) => {
-                    error!("❌ Socket recv error: {}", e);
+                    error!("[ERROR]   Socket recv error: {}", e);
                 }
             }
         }
 
-        info!("Telemetry receiver task terminated");
+        info!("[INFO]   Telemetry receiver task terminated");
     })
 }
