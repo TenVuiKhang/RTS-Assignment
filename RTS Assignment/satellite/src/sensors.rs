@@ -11,13 +11,45 @@ use tracing::{info, warn, error, debug};
 use chrono::Utc;
 use std::hint::black_box; // Lab 2: Prevent optimization
 
+// ============================================================
+// FAULT TYPES
+// ============================================================
+
+#[derive(Debug)]
+enum FaultKind {
+    Delayed,    // reading skipped entirely — simulates sensor timeout
+    Corrupted,  // reading sent with out-of-range value — simulates bad data
+}
+
+impl FaultKind {
+    fn label(&self) -> &str {
+        match self {
+            FaultKind::Delayed   => "DELAYED   (reading skipped)",
+            FaultKind::Corrupted => "CORRUPTED (bad value injected)",
+        }
+    }
+}
+
+/// Out-of-range corrupt values — obviously wrong so ground can detect them
+fn corrupt_value(sensor_type: &SensorType) -> f64 {
+    match sensor_type {
+        SensorType::Thermal  => 999.9,   // normal: 20-85C,    corrupt: 999.9C
+        SensorType::Attitude => 9999.0,  // normal: -180-180,  corrupt: 9999
+        SensorType::Power    => -99.9,   // normal: 10-14V,    corrupt: -99.9V
+    }
+}
+
+// ============================================================
+// SENSOR READING STRUCT
+// ============================================================
+
 #[derive(Debug, Clone)]
 pub struct SensorReading {
-    pub sensor_id: u8,
+    pub sensor_id:   u8,
     pub sensor_type: SensorType,
-    pub value: f64,
-    pub timestamp: Instant,
-    pub priority: u8,
+    pub value:       f64,
+    pub timestamp:   Instant,
+    pub priority:    u8,
 }
 
 /// Simulate sensor value reading (Lab 2: Stack allocation, no heap)
@@ -27,105 +59,181 @@ fn read_sensor_value(sensor_type: &SensorType) -> f64 {
 
     // Use black_box to prevent compiler optimization (Lab 2)
     black_box(match sensor_type {
-        SensorType::Thermal => {
-            // Temperature in Celsius (20-85°C)
-            rng.gen_range(20.0..85.0)
-        }
-        SensorType::Attitude => {
-            // Angle in degrees (-180 to 180)
-            rng.gen_range(-180.0..180.0)
-        }
-        SensorType::Power => {
-            // Voltage (10-14V)
-            rng.gen_range(10.0..14.0)
-        }
+        SensorType::Thermal  => rng.gen_range(20.0..85.0),
+        SensorType::Attitude => rng.gen_range(-180.0..180.0),
+        SensorType::Power    => rng.gen_range(10.0..14.0),
     })
 }
 
+// ============================================================
+// FAULT BANNER DISPLAY
+// ============================================================
+
+/// Prints a clearly visible fault injection report to the terminal.
+/// Built as a single string then printed with one eprintln! so
+/// multiple sensor threads cannot interleave their output.
+fn display_fault_banner(
+    sensor_id:    u8,
+    sensor_type:  &SensorType,
+    fault_kind:   &FaultKind,
+    fault_number: u64,
+    recovery_ms:  Option<u128>,
+    corrupt_val:  Option<f64>,
+) {
+    let timestamp = Utc::now().format("%H:%M:%S%.3f");
+
+    let recovery_str = match recovery_ms {
+        Some(ms) if ms <= 200 => format!("OK  -- recovered in {}ms (limit: 200ms)", ms),
+        Some(ms)              => format!("FAIL -- {}ms exceeded 200ms limit!", ms),
+        None                  => "N/A".to_string(),
+    };
+
+    let value_str = match corrupt_val {
+        Some(v) => format!("{:.1} (out of valid range)", v),
+        None    => "N/A (reading skipped)".to_string(),
+    };
+
+    // Single eprintln! = one atomic write, no interleaving between threads
+    eprintln!(
+"
++------------------------------------------------------------+
+|  !! FAULT INJECTION #{}  --  Sensor {} ({:?})
++------------------------------------------------------------+
+|  Fault Type   : {}
+|  Inject Value : {}
+|  Timestamp    : {}
+|  Recovery     : {}
++------------------------------------------------------------+
+",
+        fault_number, sensor_id, sensor_type,
+        fault_kind.label(),
+        value_str,
+        timestamp,
+        recovery_str,
+    );
+}
+
+// ============================================================
+// SENSOR TASK
+// ============================================================
+
 /// Spawn sensor task (Lab 1, 6, 8: Jitter, resilient loops, timing)
 pub fn spawn_sensor_task(
-    sensor_id: u8,
-    sensor_type: SensorType,
-    interval_ms: u64,
-    priority: u8,
-    tx: mpsc::Sender<SensorReading>,
-    metrics: Arc<Mutex<Metrics>>,
+    sensor_id:             u8,
+    sensor_type:           SensorType,
+    interval_ms:           u64,
+    priority:              u8,
+    tx:                    mpsc::Sender<SensorReading>,
+    metrics:               Arc<Mutex<Metrics>>,
     fault_injection_every: u64,
-    jitter_threshold_ms: f64,
+    jitter_threshold_ms:   f64,
 ) -> tokio::task::JoinHandle<()> {
     tokio::spawn(async move {
-        let mut ticker             = interval(Duration::from_millis(interval_ms));
-        let mut expected_time      = Instant::now();
-        let mut iteration          = 0u64;
+        let mut ticker               = interval(Duration::from_millis(interval_ms));
+        let mut expected_time        = Instant::now();
         let mut consecutive_failures = 0u8;
-        // Time-based fault injection: inject every 60 seconds
-        let mut last_fault_time    = Instant::now();
-        let fault_interval         = Duration::from_secs(60);
+        let mut fault_counter        = 0u64;
+
+        // Time-based fault injection: every 60 seconds
+        let mut last_fault_time     = Instant::now();
+        let fault_interval          = Duration::from_secs(60);
+
+        // Alternate Delayed / Corrupted each injection
+        let mut next_is_corrupted = false;
 
         info!(
-            "🛰️  Sensor {} ({:?}) started: interval={}ms, priority={}",
+            "Sensor {} ({:?}) started: interval={}ms, priority={}",
             sensor_id, sensor_type, interval_ms, priority
         );
 
         loop {
             let tick_time = ticker.tick().await;
-            iteration += 1;
 
             // ============================================================
-            // FAULT INJECTION CHECK (time-based: every 60 seconds)
-            // Must be checked BEFORE jitter measurement so we can reset
-            // expected_time cleanly and avoid fake jitter spikes.
+            // FAULT INJECTION (every 60 seconds, time-based)
+            // Checked BEFORE jitter so expected_time resets cleanly
+            // and the next tick does not record a false jitter spike.
             // ============================================================
-            let should_inject_fault = last_fault_time.elapsed() >= fault_interval;
-
-            if should_inject_fault {
-                last_fault_time = Instant::now();
-
-                warn!("💥 FAULT INJECTION: Sensor {} simulated failure", sensor_id);
-                metrics.lock().await.fault_count += 1;
+            if last_fault_time.elapsed() >= fault_interval {
+                last_fault_time   = Instant::now();
+                fault_counter    += 1;
                 consecutive_failures += 1;
 
-                // Lab 6: Resilient loop - recover after 3 consecutive failures
-                if consecutive_failures >= 3 {
+                let fault_kind = if next_is_corrupted {
+                    FaultKind::Corrupted
+                } else {
+                    FaultKind::Delayed
+                };
+                next_is_corrupted = !next_is_corrupted;
+
+                // Recovery only triggered after 3 consecutive failures
+                let recovery_ms: Option<u128> = if consecutive_failures >= 3 {
                     error!(
-                        "🔄 Sensor {} entering recovery mode after {} consecutive failures",
+                        "Sensor {} entering recovery mode after {} consecutive failures",
                         sensor_id, consecutive_failures
                     );
-
-                    let recovery_start = std::time::Instant::now();
+                    let t = std::time::Instant::now();
                     tokio::time::sleep(Duration::from_millis(150)).await;
-                    let recovery_ms = recovery_start.elapsed().as_millis();
+                    let ms = t.elapsed().as_millis();
+                    consecutive_failures = 0;
 
-                    if recovery_ms > 200 {
+                    if ms > 200 {
                         error!(
-                            "🚨 MISSION ABORT: Sensor {} recovery {}ms exceeded 200ms limit",
-                            sensor_id, recovery_ms
-                        );
-                    } else {
-                        info!(
-                            "✅ Sensor {} recovered in {}ms",
-                            sensor_id, recovery_ms
+                            "MISSION ABORT: Sensor {} recovery {}ms exceeded 200ms limit",
+                            sensor_id, ms
                         );
                     }
+                    Some(ms)
+                } else {
+                    None
+                };
 
-                    consecutive_failures = 0;
+                match fault_kind {
+                    FaultKind::Delayed => {
+                        display_fault_banner(
+                            sensor_id, &sensor_type,
+                            &FaultKind::Delayed,
+                            fault_counter, recovery_ms, None,
+                        );
+                        metrics.lock().await.fault_count += 1;
+
+                        // Reset baseline so next jitter is measured cleanly
+                        expected_time = tick_time + Duration::from_millis(interval_ms);
+                        continue; // skip this reading
+                    }
+                    FaultKind::Corrupted => {
+                        let bad_value = corrupt_value(&sensor_type);
+
+                        display_fault_banner(
+                            sensor_id, &sensor_type,
+                            &FaultKind::Corrupted,
+                            fault_counter, recovery_ms, Some(bad_value),
+                        );
+                        metrics.lock().await.fault_count += 1;
+
+                        // Send corrupted reading — ground station should
+                        // detect out-of-range value and flag it
+                        let corrupted = SensorReading {
+                            sensor_id,
+                            sensor_type: sensor_type.clone(),
+                            value:       bad_value,
+                            timestamp:   tick_time,
+                            priority,
+                        };
+                        let _ = tx.try_send(corrupted);
+
+                        expected_time = tick_time + Duration::from_millis(interval_ms);
+                        continue;
+                    }
                 }
-
-                // Reset expected_time to current tick + one interval so the
-                // NEXT tick measures jitter cleanly from this point forward.
-                // Without this, the next tick sees jitter = recovery_sleep_time
-                // which is not real scheduling jitter — it's intentional delay.
-                expected_time = tick_time + Duration::from_millis(interval_ms);
-                continue; // Skip this reading
             }
 
-            // Reset consecutive failures on any successful (non-fault) tick
+            // Reset consecutive failures on any successful tick
             consecutive_failures = 0;
 
             // ============================================================
             // JITTER MEASUREMENT (Lab 1: OS scheduling unpredictability)
-            // Only measured on normal ticks — fault/recovery ticks are
-            // excluded because their delay is intentional, not OS jitter.
+            // Only on normal ticks — fault ticks excluded intentionally
             // ============================================================
             let jitter = if tick_time > expected_time {
                 tick_time.duration_since(expected_time)
@@ -134,50 +242,45 @@ pub fn spawn_sensor_task(
             };
             let jitter_ms = jitter.as_secs_f64() * 1000.0;
 
-            // Record jitter
             {
                 let mut m = metrics.lock().await;
                 m.record_jitter(jitter_ms);
             }
 
-            // Check critical jitter threshold (Lab 1: <1ms for thermal)
             if matches!(sensor_type, SensorType::Thermal) && jitter_ms > jitter_threshold_ms {
                 warn!(
-                    "⚠️  Sensor {} CRITICAL JITTER: {:.3}ms exceeds {:.3}ms threshold",
+                    "Sensor {} CRITICAL JITTER: {:.3}ms exceeds {:.3}ms threshold",
                     sensor_id, jitter_ms, jitter_threshold_ms
                 );
             }
 
-            // Advance expected time by one interval for next tick
             expected_time = tick_time + Duration::from_millis(interval_ms);
 
             // ============================================================
-            // SENSOR READING
+            // NORMAL SENSOR READING
             // ============================================================
             let reading = SensorReading {
                 sensor_id,
                 sensor_type: sensor_type.clone(),
-                value: read_sensor_value(&sensor_type),
-                timestamp: tick_time,
+                value:       read_sensor_value(&sensor_type),
+                timestamp:   tick_time,
                 priority,
             };
 
             // ============================================================
-            // LATENCY TRACKING (Sensor → Buffer)
+            // LATENCY TRACKING (Sensor -> Buffer)
             // ============================================================
             let send_start = Instant::now();
 
             match tx.try_send(reading.clone()) {
                 Ok(_) => {
-                    let latency    = send_start.elapsed();
-                    let latency_ms = latency.as_secs_f64() * 1000.0;
+                    let latency_ms = send_start.elapsed().as_secs_f64() * 1000.0;
 
                     {
                         let mut m = metrics.lock().await;
                         m.total_readings += 1;
                         m.record_latency(latency_ms);
 
-                        // Reset consecutive thermal misses on successful send
                         if matches!(sensor_type, SensorType::Thermal) {
                             m.consecutive_thermal_misses = 0;
                         }
@@ -189,24 +292,22 @@ pub fn spawn_sensor_task(
                     );
                 }
                 Err(mpsc::error::TrySendError::Full(_)) => {
-                    // BUFFER OVERFLOW - Data loss!
                     error!(
-                        "❌ Sensor {} DATA DROPPED - buffer full at {}",
+                        "Sensor {} DATA DROPPED - buffer full at {}",
                         sensor_id,
                         chrono::Utc::now().format("%H:%M:%S%.3f")
                     );
 
                     let mut m = metrics.lock().await;
-                    m.dropped_readings += 1;
-                    m.buffer_fill_percentage = 100.0;
+                    m.dropped_readings       += 1;
+                    m.buffer_fill_percentage  = 100.0;
 
-                    // SAFETY ALERT: Critical thermal data missed?
                     if matches!(sensor_type, SensorType::Thermal) {
                         m.consecutive_thermal_misses += 1;
 
                         if m.consecutive_thermal_misses >= 3 {
                             error!(
-                                "🚨 SAFETY ALERT: Thermal data missed {} consecutive cycles!",
+                                "SAFETY ALERT: Thermal data missed {} consecutive cycles!",
                                 m.consecutive_thermal_misses
                             );
                         }
@@ -229,10 +330,10 @@ pub fn reading_to_telemetry(reading: &SensorReading, packet_id: u64) -> Telemetr
         packet_id,
         timestamp: Utc::now(),
         payload: TelemetryPayload::SensorData {
-            sensor_id: reading.sensor_id,
+            sensor_id:   reading.sensor_id,
             sensor_type: reading.sensor_type.clone(),
-            value: reading.value,
-            priority: reading.priority,
+            value:       reading.value,
+            priority:    reading.priority,
         },
     }
 }
@@ -245,13 +346,24 @@ mod tests {
     fn test_sensor_value_ranges() {
         for _ in 0..100 {
             let thermal = read_sensor_value(&SensorType::Thermal);
-            assert!(thermal >= 20.0 && thermal <= 85.0);
+            assert!(thermal >= 20.0 && thermal <= 85.0,
+                "Thermal out of range: {}", thermal);
 
             let attitude = read_sensor_value(&SensorType::Attitude);
-            assert!(attitude >= -180.0 && attitude <= 180.0);
+            assert!(attitude >= -180.0 && attitude <= 180.0,
+                "Attitude out of range: {}", attitude);
 
             let power = read_sensor_value(&SensorType::Power);
-            assert!(power >= 10.0 && power <= 14.0);
+            assert!(power >= 10.0 && power <= 14.0,
+                "Power out of range: {}", power);
         }
+    }
+
+    #[test]
+    fn test_corrupt_values_are_out_of_range() {
+        // Corrupt values must be clearly outside normal operating ranges
+        assert!(corrupt_value(&SensorType::Thermal)  > 85.0,   "Thermal corrupt value not high enough");
+        assert!(corrupt_value(&SensorType::Attitude).abs() > 180.0, "Attitude corrupt value not out of range");
+        assert!(corrupt_value(&SensorType::Power)    < 10.0,   "Power corrupt value not low enough");
     }
 }

@@ -194,29 +194,79 @@ pub fn spawn_reporter(
 ) -> tokio::task::JoinHandle<()> {
     tokio::spawn(async move {
         let mut ticker = interval(Duration::from_secs(interval_secs));
-        
+
         loop {
             ticker.tick().await;
-            
+
             let m = metrics.lock().await;
-            
-            info!("=================================================");
-            info!("📊 SATELLITE METRICS:");
-            info!("{}", m.summary());
-            info!("=================================================");
-            
-            // Warnings for critical conditions
+
+            let drop_rate = if m.total_readings > 0 {
+                (m.dropped_readings as f64 / m.total_readings as f64) * 100.0
+            } else { 0.0 };
+
+            let schedulable = if m.cpu_utilization() <= 75.7 { "YES" } else { "NO" };
+
+            // Alerts
+            let mut alerts = String::new();
             if m.buffer_fill_percentage > 80.0 {
-                warn!("⚠️  Buffer fill at {:.1}% - DEGRADED MODE", m.buffer_fill_percentage);
+                alerts.push_str(&format!("  [!] DEGRADED MODE - buffer at {:.1}%
+", m.buffer_fill_percentage));
             }
-            
             if m.max_jitter_ms > 1.0 {
-                warn!("⚠️  Jitter exceeded 1ms threshold: {:.3}ms", m.max_jitter_ms);
+                alerts.push_str(&format!("  [!] Jitter exceeded 1ms: {:.3}ms
+", m.max_jitter_ms));
             }
-            
             if m.consecutive_thermal_misses >= 3 {
-                warn!("⚠️  Thermal sensor missed {} consecutive readings", m.consecutive_thermal_misses);
+                alerts.push_str(&format!("  [!] Thermal missed {} consecutive readings
+", m.consecutive_thermal_misses));
             }
+            if alerts.is_empty() {
+                alerts.push_str("  All systems nominal
+");
+            }
+
+            // Build as one string then print atomically
+            let report = format!(
+"
++------------------------------------------------------------------+
+|              SATELLITE OCS  --  PERIODIC METRICS                 |
++------------------------------------------------------------------+
+| SENSOR         Total: {tr:<10} Dropped: {dr:<10} Loss: {loss:.2}% |
+| TIMING         Avg Jitter: {aj:.3}ms    Max Jitter: {mj:.3}ms        |
+|                Avg Drift:  {ad:.3}ms    Max Drift:  {md:.3}ms       |
+|                Max Latency (sensor->buf): {ml:.3}ms                |
+| DEADLINES      Missed: {miss:<10} Faults: {faults:<10}             |
+| BUFFER         Current: {cbf:.1}%      Peak: {pbf:.1}%                     |
+| CPU            Utilization: {cpu:.1}%   RM Schedulable: {sched}           |
+| NETWORK        Sent: {ps:<10} Failed: {pf:<10} Rate: {psr:.1}%  |
+| COMMANDS       Received: {cr:<10} Processed: {cp:<10}        |
++------------------------------------------------------------------+
+| STATUS
+{alerts}+------------------------------------------------------------------+
+",
+                tr    = m.total_readings,
+                dr    = m.dropped_readings,
+                loss  = drop_rate,
+                aj    = m.avg_jitter(),
+                mj    = m.max_jitter_ms,
+                ad    = m.avg_drift(),
+                md    = m.max_drift_ms,
+                ml    = m.max_latency_ms,
+                miss  = m.missed_deadlines,
+                faults = m.fault_count,
+                cbf   = m.buffer_fill_percentage,
+                pbf   = m.max_buffer_fill,
+                cpu   = m.cpu_utilization(),
+                sched = schedulable,
+                ps    = m.packets_sent,
+                pf    = m.packets_failed,
+                psr   = m.packet_success_rate(),
+                cr    = m.commands_received,
+                cp    = m.commands_processed,
+                alerts = alerts,
+            );
+
+            eprintln!("{}", report);
         }
     })
 }
