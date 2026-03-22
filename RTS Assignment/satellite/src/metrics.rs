@@ -32,8 +32,8 @@ pub struct Metrics {
     // Fault tracking
     pub fault_count: u64,
     pub consecutive_thermal_misses: u8,
-    pub last_fault_description: String,  // e.g. "CORRUPTED | Sensor 1 (Thermal) | value: 999.9"
-    pub last_fault_time: String,         // e.g. "14:32:05.123"
+    pub last_fault_description: String, // e.g. "CORRUPTED | Sensor 1 (Thermal) | value: 999.9"
+    pub last_fault_time: String,        // e.g. "14:32:05.123"
     
     // CPU utilization
     pub cpu_active_time_ms: u128,
@@ -44,6 +44,20 @@ pub struct Metrics {
     pub packets_failed: u64,
     pub commands_received: u64,
     pub commands_processed: u64,
+    pub commands_rejected: u64,
+
+    // Command latency (recv → ACK sent)
+    pub max_command_latency_ms: f64,
+    pub command_latency_samples: Vec<f64>,
+
+    // Fault recovery tracking
+    pub fault_inject_time: Option<std::time::Instant>, // when last fault was injected
+    pub last_recovery_time_ms: f64,                    // how long recovery took
+    pub max_recovery_time_ms: f64,
+
+    // Safety interlock state
+    pub interlock_active: bool,   // true = fault active, commands blocked
+    pub interlock_reason: String, // description of blocking fault
 }
 
 impl Metrics {
@@ -51,6 +65,9 @@ impl Metrics {
         Self {
             jitter_samples: Vec::with_capacity(100),
             drift_samples: Vec::with_capacity(100),
+            command_latency_samples: Vec::with_capacity(100),
+            interlock_active: false,
+            interlock_reason: String::new(),
             last_fault_description: String::new(),
             last_fault_time: String::new(),
             ..Default::default()
@@ -131,6 +148,37 @@ impl Metrics {
         } else {
             (self.packets_sent as f64 / total as f64) * 100.0
         }
+    }
+
+    /// Record command round-trip latency (recv → ACK sent)
+    pub fn record_command_latency(&mut self, latency_ms: f64) {
+        if latency_ms > self.max_command_latency_ms {
+            self.max_command_latency_ms = latency_ms;
+        }
+        self.command_latency_samples.push(latency_ms);
+        if self.command_latency_samples.len() > 100 {
+            self.command_latency_samples.remove(0);
+        }
+    }
+
+    /// Average command latency
+    pub fn avg_command_latency(&self) -> f64 {
+        if self.command_latency_samples.is_empty() {
+            0.0
+        } else {
+            self.command_latency_samples.iter().sum::<f64>()
+                / self.command_latency_samples.len() as f64
+        }
+    }
+
+    /// Record fault recovery time and check 200ms abort threshold
+    /// Returns true if recovery was within limit, false if mission abort triggered
+    pub fn record_recovery(&mut self, recovery_ms: f64) -> bool {
+        self.last_recovery_time_ms = recovery_ms;
+        if recovery_ms > self.max_recovery_time_ms {
+            self.max_recovery_time_ms = recovery_ms;
+        }
+        recovery_ms < 200.0
     }
 
     /// Generate metrics summary for logging
@@ -222,6 +270,19 @@ pub fn spawn_reporter(
             if m.consecutive_thermal_misses >= 3 {
                 alerts.push_str(&format!("  [!] Thermal missed {} consecutive readings\n", m.consecutive_thermal_misses));
             }
+            if m.interlock_active {
+                alerts.push_str(&format!("  [LOCK] SAFETY INTERLOCK ACTIVE: {}\n", m.interlock_reason));
+            }
+            if m.commands_rejected > 0 {
+                alerts.push_str(&format!("  [!] Commands rejected by interlock: {}\n", m.commands_rejected));
+            }
+            if m.max_recovery_time_ms > 0.0 {
+                let status = if m.max_recovery_time_ms < 200.0 { "OK" } else { "ABORT THRESHOLD EXCEEDED" };
+                alerts.push_str(&format!(
+                    "  [R] Last recovery: {:.1}ms | Max: {:.1}ms | {}\n",
+                    m.last_recovery_time_ms, m.max_recovery_time_ms, status
+                ));
+            }
             if !m.last_fault_description.is_empty() {
                 alerts.push_str(&format!(
                     "  [F] Last fault #{}: {} @ {}\n",
@@ -246,7 +307,9 @@ pub fn spawn_reporter(
 | BUFFER         Current: {cbf:.1}%      Peak: {pbf:.1}%                     |
 | CPU            Utilization: {cpu:.1}%   RM Schedulable: {sched}           |
 | NETWORK        Sent: {ps:<10} Failed: {pf:<10} Rate: {psr:.1}%  |
-| COMMANDS       Received: {cr:<10} Processed: {cp:<10}        |
+| COMMANDS       Recv: {cr:<6} Processed: {cp:<6} Rejected: {rej:<6}      |
+|                Avg Cmd Latency: {acl:.3}ms  Max: {mcl:.3}ms            |
+| RECOVERY       Last: {lrt:.1}ms          Max: {mrt:.1}ms                  |
 +------------------------------------------------------------------+
 | STATUS
 {alerts}+------------------------------------------------------------------+
@@ -270,6 +333,11 @@ pub fn spawn_reporter(
                 psr   = m.packet_success_rate(),
                 cr    = m.commands_received,
                 cp    = m.commands_processed,
+                rej   = m.commands_rejected,
+                acl   = m.avg_command_latency(),
+                mcl   = m.max_command_latency_ms,
+                lrt   = m.last_recovery_time_ms,
+                mrt   = m.max_recovery_time_ms,
                 alerts = alerts,
             );
 

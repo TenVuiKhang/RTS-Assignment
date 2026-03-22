@@ -122,17 +122,23 @@ pub fn spawn_sensor_task(
         );
 
         loop {
+            // Capture the Tokio scheduled tick (used only for advancing expected_time)
             let tick_time = ticker.tick().await;
+
+            // Capture actual wall-clock wake time immediately — this reflects
+            // real OS scheduling delay. Tokio's tick_time is the *scheduled*
+            // instant, so tick_time ≈ expected_time always, giving false 0ms jitter.
+            let actual_wake = Instant::now();
 
             // ============================================================
             // JITTER MEASUREMENT (Lab 1: OS scheduling unpredictability)
+            // Jitter = actual wake time − scheduled wake time
             // ============================================================
-            let jitter = if tick_time > expected_time {
-                tick_time.duration_since(expected_time)
+            let jitter_ms = if actual_wake > expected_time {
+                actual_wake.duration_since(expected_time).as_secs_f64() * 1000.0
             } else {
-                expected_time.duration_since(tick_time)
+                0.0 // woke early (rare) — count as no jitter
             };
-            let jitter_ms = jitter.as_secs_f64() * 1000.0;
 
             {
                 let mut m = metrics.lock().await;
@@ -173,6 +179,30 @@ pub fn spawn_sensor_task(
                         m.record_latency(latency_ms);
                         if matches!(sensor_type, SensorType::Thermal) {
                             m.consecutive_thermal_misses = 0;
+                        }
+
+                        // ====================================================
+                        // FAULT RECOVERY — clear interlock and measure time
+                        // ====================================================
+                        if m.interlock_active {
+                            if let Some(inject_time) = m.fault_inject_time.take() {
+                                let recovery_ms = inject_time.elapsed().as_secs_f64() * 1000.0;
+                                let within_limit = m.record_recovery(recovery_ms);
+                                m.interlock_active = false;
+                                m.interlock_reason = String::new();
+
+                                if within_limit {
+                                    info!(
+                                        "✅ Sensor {} fault recovered in {:.1}ms (limit: 200ms)",
+                                        sensor_id, recovery_ms
+                                    );
+                                } else {
+                                    error!(
+                                        "🚨 MISSION ABORT: Sensor {} recovery took {:.1}ms — exceeds 200ms limit!",
+                                        sensor_id, recovery_ms
+                                    );
+                                }
+                            }
                         }
                     }
                     debug!(
@@ -260,11 +290,9 @@ pub fn spawn_fault_injector(
             let fault_time = Utc::now().format("%H:%M:%S%.3f").to_string();
 
             if next_is_corrupted {
-                // CORRUPTED: print banner then inject bad value into channel
                 let bad_value = corrupt_value(&sensor_type);
                 display_fault_banner(chosen, &sensor_type, &FaultKind::Corrupted, fault_counter, Some(bad_value));
 
-                // Single atomic metrics update — count + description together
                 {
                     let mut m = metrics.lock().await;
                     m.fault_count += 1;
@@ -273,6 +301,13 @@ pub fn spawn_fault_injector(
                         chosen, sensor_type, bad_value
                     );
                     m.last_fault_time = fault_time;
+                    // Activate interlock — blocks non-exempt commands until recovery
+                    m.interlock_active = true;
+                    m.interlock_reason = format!(
+                        "Corrupted sensor {} ({:?}) data detected", chosen, sensor_type
+                    );
+                    // Record inject time for recovery measurement
+                    m.fault_inject_time = Some(std::time::Instant::now());
                 }
 
                 let corrupted = SensorReading {
@@ -284,10 +319,8 @@ pub fn spawn_fault_injector(
                 };
                 let _ = tx.try_send(corrupted);
             } else {
-                // DELAYED: reading skipped — banner is the only output
                 display_fault_banner(chosen, &sensor_type, &FaultKind::Delayed, fault_counter, None);
 
-                // Single atomic metrics update
                 {
                     let mut m = metrics.lock().await;
                     m.fault_count += 1;
@@ -296,6 +329,12 @@ pub fn spawn_fault_injector(
                         chosen, sensor_type
                     );
                     m.last_fault_time = fault_time;
+                    // Activate interlock
+                    m.interlock_active = true;
+                    m.interlock_reason = format!(
+                        "Delayed/missing sensor {} ({:?}) data", chosen, sensor_type
+                    );
+                    m.fault_inject_time = Some(std::time::Instant::now());
                 }
             }
 

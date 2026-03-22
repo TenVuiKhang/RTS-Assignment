@@ -180,30 +180,60 @@ async fn handle_command(
     metrics: &Arc<Mutex<Metrics>>,
     urgent_deadline_ms: u64,
 ) {
-    let recv_time = Instant::now();
-    
+    let recv_time = Instant::now(); // start of full command latency
+
     // Deserialize command
     match CommandPacket::from_bytes(bytes) {
         Ok(cmd) => {
-            let process_start = Instant::now();
-            
             info!(
                 "📥 Command #{} from {} | urgency: {:?}",
                 cmd.command_id, addr, cmd.urgency
             );
-            
-            // Update metrics
+
             {
                 let mut m = metrics.lock().await;
                 m.commands_received += 1;
             }
-            
-            // Process command
+
+            // ================================================================
+            // SAFETY INTERLOCK — block commands while a fault is active
+            // EmergencyShutdown and ClearFault are always allowed through
+            // ================================================================
+            let interlock_active = {
+                let m = metrics.lock().await;
+                m.interlock_active
+            };
+
+            let is_exempt = matches!(
+                cmd.payload,
+                crate::protocol::CommandPayload::EmergencyShutdown { .. }
+                    | crate::protocol::CommandPayload::ClearFault { .. }
+            );
+
+            if interlock_active && !is_exempt {
+                let reason = {
+                    let m = metrics.lock().await;
+                    m.interlock_reason.clone()
+                };
+                warn!(
+                    "🔒 Command #{} REJECTED by safety interlock: {}",
+                    cmd.command_id, reason
+                );
+                metrics.lock().await.commands_rejected += 1;
+                send_acknowledgment(socket, addr, cmd.command_id, false, 0.0).await;
+                return;
+            }
+
+            // ================================================================
+            // PROCESS COMMAND
+            // ================================================================
+            let process_start = Instant::now();
             let success = process_command(&cmd).await;
-            
-            let processing_time = process_start.elapsed();
-            let processing_ms = processing_time.as_secs_f64() * 1000.0;
-            
+            let processing_ms = process_start.elapsed().as_secs_f64() * 1000.0;
+
+            // Full command latency: recv → ACK sent
+            let full_latency_ms = recv_time.elapsed().as_secs_f64() * 1000.0;
+
             // Check urgent command deadline (2ms)
             if matches!(cmd.urgency, CommandUrgency::Urgent | CommandUrgency::Emergency) {
                 if processing_ms > urgent_deadline_ms as f64 {
@@ -214,12 +244,20 @@ async fn handle_command(
                     metrics.lock().await.missed_deadlines += 1;
                 }
             }
-            
-            if success {
-                metrics.lock().await.commands_processed += 1;
+
+            {
+                let mut m = metrics.lock().await;
+                if success {
+                    m.commands_processed += 1;
+                }
+                m.record_command_latency(full_latency_ms);
             }
-            
-            // Send acknowledgment back to ground
+
+            debug!(
+                "📥 Command #{} latency: {:.3}ms (processing: {:.3}ms)",
+                cmd.command_id, full_latency_ms, processing_ms
+            );
+
             send_acknowledgment(socket, addr, cmd.command_id, success, processing_ms).await;
         }
         Err(e) => {
