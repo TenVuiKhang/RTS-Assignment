@@ -1,3 +1,5 @@
+// src/metrics.rs  –  GCS performance tracking
+
 use std::sync::Arc;
 use tokio::sync::Mutex;
 use tokio::time::{interval, Duration};
@@ -38,14 +40,21 @@ pub struct GcsMetrics {
 
     // Fault / interlock
     pub faults_received: u64,
+    pub interlocks_engaged: u64,
     pub interlocks_released: u64,
     pub missed_fault_response_deadlines: u64,
     pub max_interlock_latency_ms: f64,
     pub total_interlock_latency_ms: f64,
     pub interlock_samples: u64,
 
-    // Rejection log (last 100 entries)
-    pub rejection_log: Vec<(u64, String)>,
+    // Scheduler drift (GCS side)
+    pub max_scheduler_drift_ms: f64,
+    pub total_scheduler_drift_ms: f64,
+    pub scheduler_drift_samples: u64,
+    pub scheduler_drops: u64,
+
+    // Rejection log (last 100 entries — full struct from interlock.rs)
+    pub rejection_log: Vec<crate::interlock::RejectionRecord>,
 }
 
 impl GcsMetrics {
@@ -74,9 +83,16 @@ impl GcsMetrics {
         self.interlock_samples += 1;
     }
 
-    pub fn log_rejection(&mut self, cmd_id: u64, reason: &str) {
+    pub fn record_scheduler_drift(&mut self, ms: f64) {
+        if ms > self.max_scheduler_drift_ms { self.max_scheduler_drift_ms = ms; }
+        self.total_scheduler_drift_ms += ms;
+        self.scheduler_drift_samples += 1;
+    }
+
+    pub fn log_rejection(&mut self, record: crate::interlock::RejectionRecord) {
         if self.rejection_log.len() >= 100 { self.rejection_log.remove(0); }
-        self.rejection_log.push((cmd_id, reason.to_string()));
+        tracing::warn!("REJECTION LOG: {}", record);
+        self.rejection_log.push(record);
     }
 
     pub fn avg_drift_ms(&self) -> f64 {
