@@ -1,0 +1,14 @@
+[package]
+name = "gcs"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+bench = "1.1.0"
+chrono = { version = "0.4.44", features = ["serde"] }
+criterion = { version = "0.8.2", features = ["html_reports"] }
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.149"
+tokio = { version = "1.50.0", features = ["full"] }
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
