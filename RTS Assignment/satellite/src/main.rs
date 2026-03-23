@@ -13,6 +13,7 @@ mod communication;
 use std::sync::Arc;
 use tokio::sync::{mpsc, Mutex};
 use tracing::{info, error};
+use tracing_subscriber::fmt::writer::MakeWriterExt;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -21,11 +22,30 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // INITIALIZATION
     // =========================================================================
 
+    // Create logs directory if it doesn't exist
+    std::fs::create_dir_all("logs").ok();
+
+    // Log file — receives ALL levels (DEBUG, INFO, WARN, ERROR), no colour codes
+    let log_file = std::fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open("logs/satellite.log")
+        .expect("Failed to open log file");
+
+    // Terminal — only WARN and ERROR so the screen stays clean.
+    // The periodic metrics report and fault banners use eprintln! directly
+    // (via print_lock) so they always appear on screen regardless.
+    let terminal = std::io::stderr.with_max_level(tracing::Level::WARN);
+
+    // Combine: file gets everything, terminal gets WARN+ERROR only
+    let combined = terminal.and(log_file);
+
     tracing_subscriber::fmt()
         .with_max_level(tracing::Level::INFO)
         .with_target(false)
         .with_thread_ids(true)
-        .with_ansi(true)
+        .with_ansi(false)   // no colour codes (keeps log file readable)
+        .with_writer(combined)
         .init();
 
     info!("+==================================================+");

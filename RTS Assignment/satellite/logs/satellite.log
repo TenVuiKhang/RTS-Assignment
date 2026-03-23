@@ -1,0 +1,1051 @@
+2026-03-23T05:19:38.562847Z  INFO ThreadId(01) +==================================================+
+2026-03-23T05:19:38.563086Z  INFO ThreadId(01) |      SATELLITE ONBOARD CONTROL SYSTEM            |
+2026-03-23T05:19:38.563145Z  INFO ThreadId(01) +==================================================+
+2026-03-23T05:19:38.563190Z  INFO ThreadId(01) |  Course  : CT087-3-3 Real-Time Systems           |
+2026-03-23T05:19:38.563229Z  INFO ThreadId(01) |  Student : Ten Vui Khang  |  TP074341            |
+2026-03-23T05:19:38.563261Z  INFO ThreadId(01) |  Role    : Student A -- Satellite OCS            |
+2026-03-23T05:19:38.563294Z  INFO ThreadId(01) +==================================================+
+2026-03-23T05:19:38.565056Z  INFO ThreadId(01) ✅ Loaded config from: "config.toml"
+2026-03-23T05:19:38.565119Z  INFO ThreadId(01) Configuration loaded successfully
+2026-03-23T05:19:38.565135Z  INFO ThreadId(01) Network mode    : localhost
+2026-03-23T05:19:38.565145Z  INFO ThreadId(01) Satellite addr  : 127.0.0.1:8001
+2026-03-23T05:19:38.565155Z  INFO ThreadId(01) Ground addr     : 127.0.0.1:8002
+2026-03-23T05:19:38.565164Z  INFO ThreadId(01) Buffer size     : 100
+2026-03-23T05:19:38.565173Z  INFO ThreadId(01) Fault interval  : every 60 seconds (random sensor)
+2026-03-23T05:19:38.565186Z  INFO ThreadId(01) Localhost mode  : testing locally
+2026-03-23T05:19:38.565196Z  INFO ThreadId(01) +--------------------------------------------------+
+2026-03-23T05:19:38.565219Z  INFO ThreadId(01) |  Rate Monotonic Scheduler Analysis               |
+2026-03-23T05:19:38.565230Z  INFO ThreadId(01) +--------------------------------------------------+
+2026-03-23T05:19:38.565250Z  INFO ThreadId(01) Task ThermalControl utilization: 2.0% (1ms / 50ms)
+2026-03-23T05:19:38.565275Z  INFO ThreadId(01) Task DataCompression utilization: 1.5% (3ms / 200ms)
+2026-03-23T05:19:38.565287Z  INFO ThreadId(01) Task AntennaAlignment utilization: 1.0% (5ms / 500ms)
+2026-03-23T05:19:38.565299Z  INFO ThreadId(01) Task HealthMonitoring utilization: 0.8% (8ms / 1000ms)
+2026-03-23T05:19:38.565320Z  INFO ThreadId(01) Total utilization : 5.3%
+2026-03-23T05:19:38.565331Z  INFO ThreadId(01) Schedulable       : YES (within RM bound of 75.7%)
+2026-03-23T05:19:38.565342Z  INFO ThreadId(01) +--------------------------------------------------+
+2026-03-23T05:19:38.565368Z  INFO ThreadId(01) Starting subsystems...
+2026-03-23T05:19:38.565506Z  INFO ThreadId(01) +==================================================+
+2026-03-23T05:19:38.565526Z  INFO ThreadId(01) |  All subsystems started -- press Ctrl+C to stop |
+2026-03-23T05:19:38.565545Z  INFO ThreadId(01) +==================================================+
+2026-03-23T05:19:38.565602Z  INFO ThreadId(09) Sensor 1 (Thermal) started: interval=100ms, priority=3
+2026-03-23T05:19:38.565631Z  INFO ThreadId(07) Sensor 3 (Power) started: interval=500ms, priority=1
+2026-03-23T05:19:38.565678Z  INFO ThreadId(09) Sensor 2 (Attitude) started: interval=200ms, priority=2
+2026-03-23T05:19:38.565693Z  INFO ThreadId(06) [SCHED] Task scheduler started (Rate Monotonic Scheduling)
+2026-03-23T05:19:38.565738Z  INFO ThreadId(06)    ThermalControl:   50ms period,   20ms deadline (OS timer limited)
+2026-03-23T05:19:38.565752Z  INFO ThreadId(06)    DataCompression:  200ms period,  25ms deadline (OS timer limited)
+2026-03-23T05:19:38.565763Z  INFO ThreadId(06)    AntennaAlignment: 500ms period,  30ms deadline (OS timer limited)
+2026-03-23T05:19:38.565774Z  INFO ThreadId(06)    HealthMonitoring: 1000ms period, 40ms deadline (OS timer limited)
+2026-03-23T05:19:38.565788Z  INFO ThreadId(06)    Note: tokio::time::sleep() has ~15ms min resolution on general-purpose OS.
+2026-03-23T05:19:38.565799Z  INFO ThreadId(06)          A real RTOS with hardware timers achieves sub-millisecond precision.
+2026-03-23T05:19:38.568917Z  INFO ThreadId(03) [DOWNLINK] Telemetry downlink started -> 127.0.0.1:8002
+2026-03-23T05:19:38.568941Z  INFO ThreadId(04) [UPLINK] Command uplink started on 127.0.0.1:8001
+2026-03-23T05:19:38.569045Z  INFO ThreadId(04)    Dead man's switch: 2 seconds
+2026-03-23T05:19:38.569059Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 3.469ms exceeds 1.000ms threshold
+2026-03-23T05:19:38.569057Z  WARN ThreadId(05) [WARN]  Task ThermalControl scheduling drift: 3.332ms
+2026-03-23T05:19:38.571018Z  WARN ThreadId(05) [WARN]  Task DataCompression scheduling drift: 5.331ms
+2026-03-23T05:19:38.574382Z  WARN ThreadId(05) [WARN]  Task AntennaAlignment scheduling drift: 8.694ms
+2026-03-23T05:19:38.579862Z  WARN ThreadId(05) [WARN]  Task HealthMonitoring scheduling drift: 14.170ms
+2026-03-23T05:19:38.625609Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 9.881ms
+2026-03-23T05:19:38.671569Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 5.871ms
+2026-03-23T05:19:38.671569Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 5.985ms exceeds 1.000ms threshold
+2026-03-23T05:19:38.717509Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 1.814ms
+2026-03-23T05:19:38.778970Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 13.358ms exceeds 1.000ms threshold
+2026-03-23T05:19:38.779018Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 13.332ms
+2026-03-23T05:19:38.781176Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 15.491ms
+2026-03-23T05:19:38.824085Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 8.334ms
+2026-03-23T05:19:38.870387Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 4.786ms exceeds 1.000ms threshold
+2026-03-23T05:19:38.871181Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 4.689ms
+2026-03-23T05:19:38.931443Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 15.746ms
+2026-03-23T05:19:38.977834Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 12.234ms exceeds 1.000ms threshold
+2026-03-23T05:19:38.977871Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 12.188ms
+2026-03-23T05:19:38.980092Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 14.389ms
+2026-03-23T05:19:39.023642Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 7.921ms
+2026-03-23T05:19:39.071226Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 5.533ms
+2026-03-23T05:19:39.071314Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 5.730ms exceeds 1.000ms threshold
+2026-03-23T05:19:39.072657Z  WARN ThreadId(07) [WARN]  Task AntennaAlignment scheduling drift: 6.967ms
+2026-03-23T05:19:39.117814Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 2.114ms
+2026-03-23T05:19:39.179288Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 13.604ms
+2026-03-23T05:19:39.179258Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 13.656ms exceeds 1.000ms threshold
+2026-03-23T05:19:39.180847Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 15.161ms
+2026-03-23T05:19:39.226052Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 10.355ms
+2026-03-23T05:19:39.272606Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 6.908ms
+2026-03-23T05:19:39.272689Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 7.098ms exceeds 1.000ms threshold
+2026-03-23T05:19:39.319379Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 3.663ms
+2026-03-23T05:19:39.380434Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 14.835ms exceeds 1.000ms threshold
+2026-03-23T05:19:39.380477Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 14.790ms
+2026-03-23T05:19:39.382456Z  WARN ThreadId(09) [WARN]  Task DataCompression scheduling drift: 16.767ms
+2026-03-23T05:19:39.426900Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 11.202ms
+2026-03-23T05:19:39.473287Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 7.590ms
+2026-03-23T05:19:39.473308Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 7.722ms exceeds 1.000ms threshold
+2026-03-23T05:19:39.519676Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 3.978ms
+2026-03-23T05:19:39.567616Z  WARN ThreadId(07) [WARN]  Task DataCompression scheduling drift: 1.927ms
+2026-03-23T05:19:39.571776Z  WARN ThreadId(07) [WARN]  Task AntennaAlignment scheduling drift: 6.089ms
+2026-03-23T05:19:39.577757Z  WARN ThreadId(07) [WARN]  Task HealthMonitoring scheduling drift: 12.067ms
+2026-03-23T05:19:39.627619Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 11.916ms
+2026-03-23T05:19:39.673936Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 8.184ms
+2026-03-23T05:19:39.673983Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 8.302ms exceeds 1.000ms threshold
+2026-03-23T05:19:39.720356Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 4.652ms
+2026-03-23T05:19:39.769023Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 3.410ms exceeds 1.000ms threshold
+2026-03-23T05:19:39.769148Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 3.463ms
+2026-03-23T05:19:39.772101Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 6.414ms
+2026-03-23T05:19:39.830232Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 14.535ms
+2026-03-23T05:19:39.877683Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 12.083ms exceeds 1.000ms threshold
+2026-03-23T05:19:39.878271Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 11.986ms
+2026-03-23T05:19:39.923584Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 7.884ms
+2026-03-23T05:19:39.969884Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 4.281ms exceeds 1.000ms threshold
+2026-03-23T05:19:39.970062Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 4.369ms
+2026-03-23T05:19:39.972324Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 6.637ms
+2026-03-23T05:19:40.031231Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 15.532ms
+2026-03-23T05:19:40.076556Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 10.905ms exceeds 1.000ms threshold
+2026-03-23T05:19:40.077104Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 10.826ms
+2026-03-23T05:19:40.078608Z  WARN ThreadId(06) [WARN]  Task AntennaAlignment scheduling drift: 12.917ms
+2026-03-23T05:19:40.124360Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 8.512ms
+2026-03-23T05:19:40.170079Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 4.470ms exceeds 1.000ms threshold
+2026-03-23T05:19:40.171255Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 5.565ms
+2026-03-23T05:19:40.178910Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 13.039ms
+2026-03-23T05:19:40.231296Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 15.529ms
+2026-03-23T05:19:40.277676Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 11.975ms
+2026-03-23T05:19:40.278037Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 12.378ms exceeds 1.000ms threshold
+2026-03-23T05:19:40.327329Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 11.628ms
+2026-03-23T05:19:40.372209Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 6.520ms
+2026-03-23T05:19:40.371986Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 6.382ms exceeds 1.000ms threshold
+2026-03-23T05:19:40.374290Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 8.598ms
+2026-03-23T05:19:40.429356Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 13.320ms
+2026-03-23T05:19:40.473196Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 7.586ms exceeds 1.000ms threshold
+2026-03-23T05:19:40.474068Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 8.364ms
+2026-03-23T05:19:40.520724Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 4.990ms
+2026-03-23T05:19:40.581662Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 15.929ms
+2026-03-23T05:19:40.581547Z ERROR ThreadId(09) [ALERT] CRITICAL ALERT: No ground contact for 2 seconds - LOSS OF SIGNAL
+2026-03-23T05:19:40.582732Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 16.065ms exceeds 1.000ms threshold
+2026-03-23T05:19:40.584512Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 18.822ms
+2026-03-23T05:19:40.587979Z  WARN ThreadId(06) [WARN]  Task AntennaAlignment scheduling drift: 22.286ms
+2026-03-23T05:19:40.594237Z  WARN ThreadId(06) [WARN]  Task HealthMonitoring scheduling drift: 28.545ms
+2026-03-23T05:19:40.628366Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 12.595ms
+2026-03-23T05:19:40.674553Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 8.792ms
+2026-03-23T05:19:40.674532Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 8.934ms exceeds 1.000ms threshold
+2026-03-23T05:19:40.734798Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 19.094ms
+2026-03-23T05:19:40.769788Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 4.157ms exceeds 1.000ms threshold
+2026-03-23T05:19:40.770826Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 4.080ms
+2026-03-23T05:19:40.772333Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 6.639ms
+2026-03-23T05:19:40.831349Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 15.648ms
+2026-03-23T05:19:40.878775Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 13.182ms exceeds 1.000ms threshold
+2026-03-23T05:19:40.878814Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 13.050ms
+2026-03-23T05:19:40.917118Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 1.421ms
+2026-03-23T05:19:40.978643Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 13.041ms exceeds 1.000ms threshold
+2026-03-23T05:19:40.979101Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 13.409ms
+2026-03-23T05:19:40.982749Z  WARN ThreadId(09) [WARN]  Task DataCompression scheduling drift: 17.057ms
+2026-03-23T05:19:41.025090Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 9.387ms
+2026-03-23T05:19:41.071191Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 5.598ms exceeds 1.000ms threshold
+2026-03-23T05:19:41.071333Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 5.602ms
+2026-03-23T05:19:41.074001Z  WARN ThreadId(02) [WARN]  Task AntennaAlignment scheduling drift: 8.307ms
+2026-03-23T05:19:41.133527Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 17.826ms
+2026-03-23T05:19:41.178276Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 12.586ms
+2026-03-23T05:19:41.178277Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 12.669ms exceeds 1.000ms threshold
+2026-03-23T05:19:41.180066Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 14.379ms
+2026-03-23T05:19:41.224830Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 9.127ms
+2026-03-23T05:19:41.270830Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 5.242ms exceeds 1.000ms threshold
+2026-03-23T05:19:41.270821Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 5.121ms
+2026-03-23T05:19:41.317176Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 1.456ms
+2026-03-23T05:19:41.379538Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 13.854ms
+2026-03-23T05:19:41.379533Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 13.903ms exceeds 1.000ms threshold
+2026-03-23T05:19:41.381182Z  WARN ThreadId(07) [WARN]  Task DataCompression scheduling drift: 15.490ms
+2026-03-23T05:19:41.426923Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 10.873ms
+2026-03-23T05:19:41.471296Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 5.596ms
+2026-03-23T05:19:41.471296Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 5.708ms exceeds 1.000ms threshold
+2026-03-23T05:19:41.519212Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 3.503ms
+2026-03-23T05:19:41.580836Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 15.235ms exceeds 1.000ms threshold
+2026-03-23T05:19:41.580941Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 15.249ms
+2026-03-23T05:19:41.583729Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 18.038ms
+2026-03-23T05:19:41.587297Z  WARN ThreadId(03) [WARN]  Task AntennaAlignment scheduling drift: 21.609ms
+2026-03-23T05:19:41.592888Z  WARN ThreadId(03) [WARN]  Task HealthMonitoring scheduling drift: 27.200ms
+2026-03-23T05:19:41.627922Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 12.220ms
+2026-03-23T05:19:41.673333Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 7.634ms
+2026-03-23T05:19:41.673345Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 7.756ms exceeds 1.000ms threshold
+2026-03-23T05:19:41.720326Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 4.595ms
+2026-03-23T05:19:41.767643Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 2.054ms exceeds 1.000ms threshold
+2026-03-23T05:19:41.767634Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 1.938ms
+2026-03-23T05:19:41.770398Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 4.704ms
+2026-03-23T05:19:41.828672Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 12.970ms
+2026-03-23T05:19:41.875274Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 9.574ms
+2026-03-23T05:19:41.875313Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 9.718ms exceeds 1.000ms threshold
+2026-03-23T05:19:41.959600Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 43.901ms
+2026-03-23T05:19:41.969394Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 3.781ms exceeds 1.000ms threshold
+2026-03-23T05:19:41.969966Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 4.274ms
+2026-03-23T05:19:41.972859Z  WARN ThreadId(09) [WARN]  Task DataCompression scheduling drift: 7.169ms
+2026-03-23T05:19:42.031227Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 15.513ms
+2026-03-23T05:19:42.080592Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 14.978ms exceeds 1.000ms threshold
+2026-03-23T05:19:42.080679Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 14.993ms
+2026-03-23T05:19:42.082860Z  WARN ThreadId(02) [WARN]  Task AntennaAlignment scheduling drift: 17.153ms
+2026-03-23T05:19:42.128761Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 12.560ms
+2026-03-23T05:19:42.173779Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 8.177ms exceeds 1.000ms threshold
+2026-03-23T05:19:42.173924Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 8.230ms
+2026-03-23T05:19:42.176337Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 10.644ms
+2026-03-23T05:19:42.220209Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 4.488ms
+2026-03-23T05:19:42.266661Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 1.059ms exceeds 1.000ms threshold
+2026-03-23T05:19:42.328738Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 13.013ms
+2026-03-23T05:19:42.375602Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 9.979ms exceeds 1.000ms threshold
+2026-03-23T05:19:42.375747Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 10.047ms
+2026-03-23T05:19:42.377937Z  WARN ThreadId(07) [WARN]  Task DataCompression scheduling drift: 12.250ms
+2026-03-23T05:19:42.422127Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 6.429ms
+2026-03-23T05:19:42.470462Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 4.872ms exceeds 1.000ms threshold
+2026-03-23T05:19:42.470450Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 4.723ms
+2026-03-23T05:19:42.531844Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 16.142ms
+2026-03-23T05:19:42.576967Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 11.366ms exceeds 1.000ms threshold
+2026-03-23T05:19:42.577277Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 11.593ms
+2026-03-23T05:19:42.579162Z  WARN ThreadId(07) [WARN]  Task DataCompression scheduling drift: 13.475ms
+2026-03-23T05:19:42.583672Z  WARN ThreadId(07) [WARN]  Task AntennaAlignment scheduling drift: 17.986ms
+2026-03-23T05:19:42.589435Z  WARN ThreadId(07) [WARN]  Task HealthMonitoring scheduling drift: 23.746ms
+2026-03-23T05:19:42.624469Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 8.768ms
+2026-03-23T05:19:42.670176Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 4.489ms
+2026-03-23T05:19:42.670159Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 4.561ms exceeds 1.000ms threshold
+2026-03-23T05:19:42.731416Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 15.714ms
+2026-03-23T05:19:42.777660Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 12.059ms exceeds 1.000ms threshold
+2026-03-23T05:19:42.777908Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 12.218ms
+2026-03-23T05:19:42.780258Z  WARN ThreadId(07) [WARN]  Task DataCompression scheduling drift: 14.567ms
+2026-03-23T05:19:42.824159Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 8.460ms
+2026-03-23T05:19:42.869884Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 4.290ms exceeds 1.000ms threshold
+2026-03-23T05:19:42.869836Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 4.130ms
+2026-03-23T05:19:42.917143Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 1.415ms
+2026-03-23T05:19:42.979630Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 13.826ms exceeds 1.000ms threshold
+2026-03-23T05:19:42.980317Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 13.767ms
+2026-03-23T05:19:42.981726Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 16.028ms
+2026-03-23T05:19:43.026171Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 10.404ms
+2026-03-23T05:19:43.072027Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 6.425ms exceeds 1.000ms threshold
+2026-03-23T05:19:43.072141Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 6.453ms
+2026-03-23T05:19:43.074173Z  WARN ThreadId(03) [WARN]  Task AntennaAlignment scheduling drift: 8.484ms
+2026-03-23T05:19:43.119051Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 3.331ms
+2026-03-23T05:19:43.181080Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 15.476ms exceeds 1.000ms threshold
+2026-03-23T05:19:43.181279Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 15.590ms
+2026-03-23T05:19:43.183593Z  WARN ThreadId(09) [WARN]  Task DataCompression scheduling drift: 17.903ms
+2026-03-23T05:19:43.219710Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 4.011ms
+2026-03-23T05:19:43.275292Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 9.592ms
+2026-03-23T05:19:43.275302Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 9.713ms exceeds 1.000ms threshold
+2026-03-23T05:19:43.322315Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 6.607ms
+2026-03-23T05:19:43.380555Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 14.860ms
+2026-03-23T05:19:43.380865Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 14.668ms exceeds 1.000ms threshold
+2026-03-23T05:19:43.382508Z  WARN ThreadId(07) [WARN]  Task DataCompression scheduling drift: 16.813ms
+2026-03-23T05:19:43.417729Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 2.027ms
+2026-03-23T05:19:43.478778Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 13.077ms
+2026-03-23T05:19:43.478793Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 13.202ms exceeds 1.000ms threshold
+2026-03-23T05:19:43.524876Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 9.174ms
+2026-03-23T05:19:43.570839Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 5.236ms exceeds 1.000ms threshold
+2026-03-23T05:19:43.570997Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 5.311ms
+2026-03-23T05:19:43.572963Z  WARN ThreadId(07) [WARN]  Task DataCompression scheduling drift: 7.276ms
+2026-03-23T05:19:43.576466Z  WARN ThreadId(07) [WARN]  Task AntennaAlignment scheduling drift: 10.779ms
+2026-03-23T05:19:43.582095Z  WARN ThreadId(07) [WARN]  Task HealthMonitoring scheduling drift: 16.405ms
+2026-03-23T05:19:43.617275Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 1.573ms
+2026-03-23T05:19:43.681169Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 15.468ms
+2026-03-23T05:19:43.681178Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 15.590ms exceeds 1.000ms threshold
+2026-03-23T05:19:43.730916Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 15.190ms
+2026-03-23T05:19:43.774383Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 8.781ms exceeds 1.000ms threshold
+2026-03-23T05:19:43.774561Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 8.873ms
+2026-03-23T05:19:43.777893Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 12.197ms
+2026-03-23T05:19:43.820312Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 4.596ms
+2026-03-23T05:19:43.882270Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 16.660ms exceeds 1.000ms threshold
+2026-03-23T05:19:43.882396Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 16.684ms
+2026-03-23T05:19:43.929421Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 13.686ms
+2026-03-23T05:19:43.975873Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 10.188ms
+2026-03-23T05:19:43.975947Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 10.228ms exceeds 1.000ms threshold
+2026-03-23T05:19:43.977906Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 12.215ms
+2026-03-23T05:19:44.023507Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 7.802ms
+2026-03-23T05:19:44.069814Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 4.211ms exceeds 1.000ms threshold
+2026-03-23T05:19:44.069896Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 4.206ms
+2026-03-23T05:19:44.072604Z  WARN ThreadId(03) [WARN]  Task AntennaAlignment scheduling drift: 6.907ms
+2026-03-23T05:19:44.131508Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 15.808ms
+2026-03-23T05:19:44.178752Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 13.082ms exceeds 1.000ms threshold
+2026-03-23T05:19:44.179392Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 13.024ms
+2026-03-23T05:19:44.180961Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 15.268ms
+2026-03-23T05:19:44.224798Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 9.070ms
+2026-03-23T05:19:44.270367Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 4.667ms
+2026-03-23T05:19:44.270443Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 4.842ms exceeds 1.000ms threshold
+2026-03-23T05:19:44.331257Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 15.559ms
+2026-03-23T05:19:44.378011Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 12.412ms exceeds 1.000ms threshold
+2026-03-23T05:19:44.378106Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 12.418ms
+2026-03-23T05:19:44.380417Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 14.727ms
+2026-03-23T05:19:44.423328Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 7.622ms
+2026-03-23T05:19:44.469616Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 3.917ms
+2026-03-23T05:19:44.469627Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 4.040ms exceeds 1.000ms threshold
+2026-03-23T05:19:44.531862Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 16.163ms
+2026-03-23T05:19:44.578174Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 12.563ms exceeds 1.000ms threshold
+2026-03-23T05:19:44.578308Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 12.613ms
+2026-03-23T05:19:44.580921Z  WARN ThreadId(09) [WARN]  Task DataCompression scheduling drift: 15.235ms
+2026-03-23T05:19:44.584623Z  WARN ThreadId(09) [WARN]  Task AntennaAlignment scheduling drift: 18.926ms
+2026-03-23T05:19:44.590153Z  WARN ThreadId(09) [WARN]  Task HealthMonitoring scheduling drift: 24.464ms
+2026-03-23T05:19:44.625188Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 9.488ms
+2026-03-23T05:19:44.670847Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 5.104ms
+2026-03-23T05:19:44.671730Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 5.217ms exceeds 1.000ms threshold
+2026-03-23T05:19:44.717203Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 1.485ms
+2026-03-23T05:19:44.779391Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 13.783ms exceeds 1.000ms threshold
+2026-03-23T05:19:44.779479Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 13.787ms
+2026-03-23T05:19:44.781837Z  WARN ThreadId(09) [WARN]  Task DataCompression scheduling drift: 16.153ms
+2026-03-23T05:19:44.825965Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 10.264ms
+2026-03-23T05:19:44.873336Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 7.638ms
+2026-03-23T05:19:44.873341Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 7.756ms exceeds 1.000ms threshold
+2026-03-23T05:19:44.919118Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 3.414ms
+2026-03-23T05:19:44.967763Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 2.073ms
+2026-03-23T05:19:45.028533Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 12.831ms
+2026-03-23T05:19:45.074848Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 9.250ms exceeds 1.000ms threshold
+2026-03-23T05:19:45.074930Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 9.249ms
+2026-03-23T05:19:45.077499Z  WARN ThreadId(09) [WARN]  Task AntennaAlignment scheduling drift: 11.812ms
+2026-03-23T05:19:45.122083Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 6.382ms
+2026-03-23T05:19:45.169635Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 4.035ms exceeds 1.000ms threshold
+2026-03-23T05:19:45.169674Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 3.992ms
+2026-03-23T05:19:45.171916Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 6.222ms
+2026-03-23T05:19:45.231935Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 16.227ms
+2026-03-23T05:19:45.278613Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 12.907ms
+2026-03-23T05:19:45.278677Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 13.080ms exceeds 1.000ms threshold
+2026-03-23T05:19:45.324670Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 8.963ms
+2026-03-23T05:19:45.372518Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 6.923ms exceeds 1.000ms threshold
+2026-03-23T05:19:45.372641Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 6.940ms
+2026-03-23T05:19:45.375295Z  WARN ThreadId(07) [WARN]  Task DataCompression scheduling drift: 9.610ms
+2026-03-23T05:19:45.418759Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 3.060ms
+2026-03-23T05:19:45.481031Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 15.330ms
+2026-03-23T05:19:45.481094Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 15.497ms exceeds 1.000ms threshold
+2026-03-23T05:19:45.526339Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 10.636ms
+2026-03-23T05:19:45.573372Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 7.772ms exceeds 1.000ms threshold
+2026-03-23T05:19:45.573469Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 7.782ms
+2026-03-23T05:19:45.575710Z  WARN ThreadId(07) [WARN]  Task DataCompression scheduling drift: 10.025ms
+2026-03-23T05:19:45.579830Z  WARN ThreadId(07) [WARN]  Task AntennaAlignment scheduling drift: 14.145ms
+2026-03-23T05:19:45.586063Z  WARN ThreadId(07) [WARN]  Task HealthMonitoring scheduling drift: 20.356ms
+2026-03-23T05:19:45.619986Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 4.277ms
+2026-03-23T05:19:45.666819Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 1.121ms
+2026-03-23T05:19:45.666822Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 1.236ms exceeds 1.000ms threshold
+2026-03-23T05:19:45.729739Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 14.029ms
+2026-03-23T05:19:45.775811Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 10.210ms exceeds 1.000ms threshold
+2026-03-23T05:19:45.776023Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 10.305ms
+2026-03-23T05:19:45.778274Z  WARN ThreadId(09) [WARN]  Task DataCompression scheduling drift: 12.586ms
+2026-03-23T05:19:45.820679Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 4.985ms
+2026-03-23T05:19:45.867617Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 1.909ms
+2026-03-23T05:19:45.867686Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 2.097ms exceeds 1.000ms threshold
+2026-03-23T05:19:45.929205Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 13.420ms
+2026-03-23T05:19:45.974586Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 8.962ms exceeds 1.000ms threshold
+2026-03-23T05:19:45.974979Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 9.275ms
+2026-03-23T05:19:45.977562Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 11.874ms
+2026-03-23T05:19:46.019748Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 4.031ms
+2026-03-23T05:19:46.081184Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 15.573ms exceeds 1.000ms threshold
+2026-03-23T05:19:46.081538Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 15.826ms
+2026-03-23T05:19:46.083821Z  WARN ThreadId(02) [WARN]  Task AntennaAlignment scheduling drift: 18.131ms
+2026-03-23T05:19:46.127799Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 12.098ms
+2026-03-23T05:19:46.173719Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 8.118ms exceeds 1.000ms threshold
+2026-03-23T05:19:46.173763Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 8.079ms
+2026-03-23T05:19:46.175877Z  WARN ThreadId(09) [WARN]  Task DataCompression scheduling drift: 10.190ms
+2026-03-23T05:19:46.220868Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 5.171ms
+2026-03-23T05:19:46.267999Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 2.400ms exceeds 1.000ms threshold
+2026-03-23T05:19:46.268051Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 2.367ms
+2026-03-23T05:19:46.329163Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 13.465ms
+2026-03-23T05:19:46.375799Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 10.199ms exceeds 1.000ms threshold
+2026-03-23T05:19:46.375829Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 10.146ms
+2026-03-23T05:19:46.377810Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 12.088ms
+2026-03-23T05:19:46.421970Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 6.271ms
+2026-03-23T05:19:46.467721Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 2.022ms
+2026-03-23T05:19:46.467722Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 2.136ms exceeds 1.000ms threshold
+2026-03-23T05:19:46.530521Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 14.822ms
+2026-03-23T05:19:46.576374Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 10.768ms exceeds 1.000ms threshold
+2026-03-23T05:19:46.576466Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 10.775ms
+2026-03-23T05:19:46.578851Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 13.167ms
+2026-03-23T05:19:46.582480Z  WARN ThreadId(02) [WARN]  Task AntennaAlignment scheduling drift: 16.799ms
+2026-03-23T05:19:46.588140Z  WARN ThreadId(02) [WARN]  Task HealthMonitoring scheduling drift: 22.454ms
+2026-03-23T05:19:46.641369Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 25.668ms
+2026-03-23T05:19:46.674037Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 8.282ms
+2026-03-23T05:19:46.674011Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 8.411ms exceeds 1.000ms threshold
+2026-03-23T05:19:46.720231Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 4.509ms
+2026-03-23T05:19:46.768006Z  WARN ThreadId(09) [WARN]  Task DataCompression scheduling drift: 2.316ms
+2026-03-23T05:19:46.827961Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 12.256ms
+2026-03-23T05:19:46.875180Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 9.473ms
+2026-03-23T05:19:46.875267Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 9.671ms exceeds 1.000ms threshold
+2026-03-23T05:19:46.921302Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 5.603ms
+2026-03-23T05:19:46.967836Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 2.220ms exceeds 1.000ms threshold
+2026-03-23T05:19:46.968193Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 2.423ms
+2026-03-23T05:19:46.970576Z  WARN ThreadId(07) [WARN]  Task DataCompression scheduling drift: 4.886ms
+2026-03-23T05:19:47.029327Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 13.630ms
+2026-03-23T05:19:47.075659Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 10.053ms exceeds 1.000ms threshold
+2026-03-23T05:19:47.075810Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 10.105ms
+2026-03-23T05:19:47.078674Z  WARN ThreadId(06) [WARN]  Task AntennaAlignment scheduling drift: 12.986ms
+2026-03-23T05:19:47.121874Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 6.172ms
+2026-03-23T05:19:47.167643Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 2.047ms exceeds 1.000ms threshold
+2026-03-23T05:19:47.167688Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 2.004ms
+2026-03-23T05:19:47.169637Z  WARN ThreadId(09) [WARN]  Task DataCompression scheduling drift: 3.949ms
+2026-03-23T05:19:47.228293Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 12.589ms
+2026-03-23T05:19:47.274119Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 8.418ms
+2026-03-23T05:19:47.274187Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 8.590ms exceeds 1.000ms threshold
+2026-03-23T05:19:47.319974Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 4.274ms
+2026-03-23T05:19:47.366778Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 1.176ms exceeds 1.000ms threshold
+2026-03-23T05:19:47.367009Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 1.294ms
+2026-03-23T05:19:47.369536Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 3.847ms
+2026-03-23T05:19:47.429064Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 13.356ms
+2026-03-23T05:19:47.475125Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 9.425ms
+2026-03-23T05:19:47.475154Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 9.566ms exceeds 1.000ms threshold
+2026-03-23T05:19:47.521527Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 5.825ms
+2026-03-23T05:19:47.568406Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 2.802ms exceeds 1.000ms threshold
+2026-03-23T05:19:47.568515Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 2.825ms
+2026-03-23T05:19:47.570778Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 5.088ms
+2026-03-23T05:19:47.574681Z  WARN ThreadId(03) [WARN]  Task AntennaAlignment scheduling drift: 8.998ms
+2026-03-23T05:19:47.580514Z  WARN ThreadId(03) [WARN]  Task HealthMonitoring scheduling drift: 14.830ms
+2026-03-23T05:19:47.630812Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 15.105ms
+2026-03-23T05:19:47.677394Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 11.785ms exceeds 1.000ms threshold
+2026-03-23T05:19:47.677490Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 11.793ms
+2026-03-23T05:19:47.723531Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 7.817ms
+2026-03-23T05:19:47.769598Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 3.916ms exceeds 1.000ms threshold
+2026-03-23T05:19:47.769677Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 3.995ms
+2026-03-23T05:19:47.771640Z  WARN ThreadId(07) [WARN]  Task DataCompression scheduling drift: 5.954ms
+2026-03-23T05:19:47.831507Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 15.811ms
+2026-03-23T05:19:47.877992Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 12.284ms
+2026-03-23T05:19:47.878051Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 12.449ms exceeds 1.000ms threshold
+2026-03-23T05:19:47.923742Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 8.039ms
+2026-03-23T05:19:47.969815Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 4.210ms exceeds 1.000ms threshold
+2026-03-23T05:19:47.969857Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 4.171ms
+2026-03-23T05:19:47.972404Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 6.721ms
+2026-03-23T05:19:48.017069Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 1.267ms
+2026-03-23T05:19:48.079294Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 13.675ms exceeds 1.000ms threshold
+2026-03-23T05:19:48.079602Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 13.897ms
+2026-03-23T05:19:48.082884Z  WARN ThreadId(06) [WARN]  Task AntennaAlignment scheduling drift: 17.195ms
+2026-03-23T05:19:48.125413Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 9.710ms
+2026-03-23T05:19:48.172284Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 6.596ms
+2026-03-23T05:19:48.172362Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 6.609ms exceeds 1.000ms threshold
+2026-03-23T05:19:48.173819Z  WARN ThreadId(07) [WARN]  Task DataCompression scheduling drift: 8.132ms
+2026-03-23T05:19:48.218781Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 3.061ms
+2026-03-23T05:19:48.280668Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 14.972ms
+2026-03-23T05:19:48.280699Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 15.112ms exceeds 1.000ms threshold
+2026-03-23T05:19:48.326992Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 11.290ms
+2026-03-23T05:19:48.373499Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 7.899ms exceeds 1.000ms threshold
+2026-03-23T05:19:48.373600Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 7.912ms
+2026-03-23T05:19:48.376199Z  WARN ThreadId(09) [WARN]  Task DataCompression scheduling drift: 10.514ms
+2026-03-23T05:19:48.420502Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 4.803ms
+2026-03-23T05:19:48.467349Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 1.753ms exceeds 1.000ms threshold
+2026-03-23T05:19:48.467308Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 1.601ms
+2026-03-23T05:19:48.529503Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 13.799ms
+2026-03-23T05:19:48.575912Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 10.188ms
+2026-03-23T05:19:48.575890Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 10.197ms exceeds 1.000ms threshold
+2026-03-23T05:19:48.579054Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 13.213ms
+2026-03-23T05:19:48.583399Z  WARN ThreadId(02) [WARN]  Task AntennaAlignment scheduling drift: 17.715ms
+2026-03-23T05:19:48.589241Z  WARN ThreadId(02) [WARN]  Task HealthMonitoring scheduling drift: 23.554ms
+2026-03-23T05:19:48.622670Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 6.950ms
+2026-03-23T05:19:48.669470Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 3.772ms
+2026-03-23T05:19:48.669539Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 3.950ms exceeds 1.000ms threshold
+2026-03-23T05:19:48.732291Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 16.595ms
+2026-03-23T05:19:48.779595Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 13.987ms exceeds 1.000ms threshold
+2026-03-23T05:19:48.779702Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 14.002ms
+2026-03-23T05:19:48.782117Z  WARN ThreadId(09) [WARN]  Task DataCompression scheduling drift: 16.432ms
+2026-03-23T05:19:48.825498Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 9.773ms
+2026-03-23T05:19:48.871734Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 6.032ms
+2026-03-23T05:19:48.871747Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 6.159ms exceeds 1.000ms threshold
+2026-03-23T05:19:48.919897Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 4.200ms
+2026-03-23T05:19:48.980259Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 14.639ms exceeds 1.000ms threshold
+2026-03-23T05:19:48.980477Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 14.792ms
+2026-03-23T05:19:48.982343Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 16.659ms
+2026-03-23T05:19:49.025671Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 9.969ms
+2026-03-23T05:19:49.071634Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 6.027ms exceeds 1.000ms threshold
+2026-03-23T05:19:49.071884Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 6.139ms
+2026-03-23T05:19:49.074569Z  WARN ThreadId(02) [WARN]  Task AntennaAlignment scheduling drift: 8.882ms
+2026-03-23T05:19:49.117293Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 1.594ms
+2026-03-23T05:19:49.180401Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 14.719ms
+2026-03-23T05:19:49.180310Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 14.691ms exceeds 1.000ms threshold
+2026-03-23T05:19:49.181932Z  WARN ThreadId(09) [WARN]  Task DataCompression scheduling drift: 16.247ms
+2026-03-23T05:19:49.225603Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 9.893ms
+2026-03-23T05:19:49.271979Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 6.272ms
+2026-03-23T05:19:49.272031Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 6.430ms exceeds 1.000ms threshold
+2026-03-23T05:19:49.317634Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 1.932ms
+2026-03-23T05:19:49.379915Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 14.317ms exceeds 1.000ms threshold
+2026-03-23T05:19:49.379995Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 14.313ms
+2026-03-23T05:19:49.382461Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 16.739ms
+2026-03-23T05:19:49.427331Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 11.632ms
+2026-03-23T05:19:49.482559Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 16.974ms exceeds 1.000ms threshold
+2026-03-23T05:19:49.482551Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 16.857ms
+2026-03-23T05:19:49.528465Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 12.758ms
+2026-03-23T05:19:49.575281Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 9.600ms
+2026-03-23T05:19:49.575230Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 9.629ms exceeds 1.000ms threshold
+2026-03-23T05:19:49.577148Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 11.462ms
+2026-03-23T05:19:49.581086Z  WARN ThreadId(02) [WARN]  Task AntennaAlignment scheduling drift: 15.404ms
+2026-03-23T05:19:49.587012Z  WARN ThreadId(02) [WARN]  Task HealthMonitoring scheduling drift: 21.320ms
+2026-03-23T05:19:49.621597Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 5.897ms
+2026-03-23T05:19:49.668287Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 2.686ms exceeds 1.000ms threshold
+2026-03-23T05:19:49.668334Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 2.649ms
+2026-03-23T05:19:49.725644Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 9.944ms
+2026-03-23T05:19:49.772196Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 6.597ms exceeds 1.000ms threshold
+2026-03-23T05:19:49.772294Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 6.608ms
+2026-03-23T05:19:49.774064Z  WARN ThreadId(09) [WARN]  Task DataCompression scheduling drift: 8.340ms
+2026-03-23T05:19:49.817780Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 2.082ms
+2026-03-23T05:19:49.880425Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 14.710ms
+2026-03-23T05:19:49.880491Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 14.888ms exceeds 1.000ms threshold
+2026-03-23T05:19:49.927972Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 12.272ms
+2026-03-23T05:19:49.974964Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 9.361ms exceeds 1.000ms threshold
+2026-03-23T05:19:49.975060Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 9.374ms
+2026-03-23T05:19:49.977614Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 11.928ms
+2026-03-23T05:19:50.021584Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 5.867ms
+2026-03-23T05:19:50.067999Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 2.311ms
+2026-03-23T05:19:50.067999Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 2.366ms exceeds 1.000ms threshold
+2026-03-23T05:19:50.069631Z  WARN ThreadId(03) [WARN]  Task AntennaAlignment scheduling drift: 3.944ms
+2026-03-23T05:19:50.128756Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 13.057ms
+2026-03-23T05:19:50.175531Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 9.930ms exceeds 1.000ms threshold
+2026-03-23T05:19:50.175575Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 9.891ms
+2026-03-23T05:19:50.177888Z  WARN ThreadId(09) [WARN]  Task DataCompression scheduling drift: 12.205ms
+2026-03-23T05:19:50.222617Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 6.916ms
+2026-03-23T05:19:50.268688Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 3.102ms exceeds 1.000ms threshold
+2026-03-23T05:19:50.268688Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 2.990ms
+2026-03-23T05:19:50.330815Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 15.118ms
+2026-03-23T05:19:50.377250Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 11.638ms exceeds 1.000ms threshold
+2026-03-23T05:19:50.377427Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 11.719ms
+2026-03-23T05:19:50.379461Z  WARN ThreadId(07) [WARN]  Task DataCompression scheduling drift: 13.775ms
+2026-03-23T05:19:50.423084Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 7.386ms
+2026-03-23T05:19:50.470361Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 4.652ms
+2026-03-23T05:19:50.470376Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 4.789ms exceeds 1.000ms threshold
+2026-03-23T05:19:50.517926Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 2.226ms
+2026-03-23T05:19:50.578982Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 13.290ms
+2026-03-23T05:19:50.578967Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 13.295ms exceeds 1.000ms threshold
+2026-03-23T05:19:50.581007Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 15.318ms
+2026-03-23T05:19:50.584846Z  WARN ThreadId(03) [WARN]  Task AntennaAlignment scheduling drift: 19.159ms
+2026-03-23T05:19:50.590688Z  WARN ThreadId(03) [WARN]  Task HealthMonitoring scheduling drift: 25.000ms
+2026-03-23T05:19:50.626276Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 10.578ms
+2026-03-23T05:19:50.673378Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 7.667ms
+2026-03-23T05:19:50.673396Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 7.804ms exceeds 1.000ms threshold
+2026-03-23T05:19:50.719427Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 3.721ms
+2026-03-23T05:19:50.780674Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 15.052ms exceeds 1.000ms threshold
+2026-03-23T05:19:50.780862Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 15.149ms
+2026-03-23T05:19:50.783239Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 17.545ms
+2026-03-23T05:19:50.827165Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 11.465ms
+2026-03-23T05:19:50.874199Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 8.493ms
+2026-03-23T05:19:50.874201Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 8.610ms exceeds 1.000ms threshold
+2026-03-23T05:19:50.921419Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 5.721ms
+2026-03-23T05:19:50.967357Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 1.667ms
+2026-03-23T05:19:50.967489Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 1.696ms exceeds 1.000ms threshold
+2026-03-23T05:19:50.969244Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 3.555ms
+2026-03-23T05:19:51.029862Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 14.157ms
+2026-03-23T05:19:51.076489Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 10.880ms exceeds 1.000ms threshold
+2026-03-23T05:19:51.076675Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 10.989ms
+2026-03-23T05:19:51.078692Z  WARN ThreadId(02) [WARN]  Task AntennaAlignment scheduling drift: 13.005ms
+2026-03-23T05:19:51.122895Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 7.196ms
+2026-03-23T05:19:51.169614Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 3.986ms exceeds 1.000ms threshold
+2026-03-23T05:19:51.169675Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 3.990ms
+2026-03-23T05:19:51.171665Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 5.979ms
+2026-03-23T05:19:51.231398Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 15.699ms
+2026-03-23T05:19:51.277700Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 12.002ms
+2026-03-23T05:19:51.277704Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 12.118ms exceeds 1.000ms threshold
+2026-03-23T05:19:51.324088Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 8.389ms
+2026-03-23T05:19:51.371959Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 6.358ms exceeds 1.000ms threshold
+2026-03-23T05:19:51.372039Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 6.354ms
+2026-03-23T05:19:51.374207Z  WARN ThreadId(07) [WARN]  Task DataCompression scheduling drift: 8.483ms
+2026-03-23T05:19:51.419065Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 3.366ms
+2026-03-23T05:19:51.482444Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 16.721ms
+2026-03-23T05:19:51.482441Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 16.841ms exceeds 1.000ms threshold
+2026-03-23T05:19:51.529324Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 13.548ms
+2026-03-23T05:19:51.576778Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 11.160ms exceeds 1.000ms threshold
+2026-03-23T05:19:51.577841Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 11.080ms
+2026-03-23T05:19:51.579325Z  WARN ThreadId(07) [WARN]  Task DataCompression scheduling drift: 13.641ms
+2026-03-23T05:19:51.582938Z  WARN ThreadId(07) [WARN]  Task AntennaAlignment scheduling drift: 17.251ms
+2026-03-23T05:19:51.588864Z  WARN ThreadId(07) [WARN]  Task HealthMonitoring scheduling drift: 23.176ms
+2026-03-23T05:19:51.623827Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 8.123ms
+2026-03-23T05:19:51.670190Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 4.495ms
+2026-03-23T05:19:51.670204Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 4.618ms exceeds 1.000ms threshold
+2026-03-23T05:19:51.731862Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 16.160ms
+2026-03-23T05:19:51.778779Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 13.177ms exceeds 1.000ms threshold
+2026-03-23T05:19:51.778806Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 13.123ms
+2026-03-23T05:19:51.781236Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 15.550ms
+2026-03-23T05:19:51.825704Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 10.009ms
+2026-03-23T05:19:51.883203Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 17.460ms
+2026-03-23T05:19:51.883179Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 17.576ms exceeds 1.000ms threshold
+2026-03-23T05:19:51.917646Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 1.947ms
+2026-03-23T05:19:51.980032Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 14.389ms exceeds 1.000ms threshold
+2026-03-23T05:19:51.980617Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 14.327ms
+2026-03-23T05:19:51.982350Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 16.664ms
+2026-03-23T05:19:52.026826Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 11.129ms
+2026-03-23T05:19:52.073134Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 7.534ms exceeds 1.000ms threshold
+2026-03-23T05:19:52.073289Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 7.592ms
+2026-03-23T05:19:52.075935Z  WARN ThreadId(02) [WARN]  Task AntennaAlignment scheduling drift: 10.248ms
+2026-03-23T05:19:52.120624Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 4.835ms
+2026-03-23T05:19:52.167424Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 1.815ms exceeds 1.000ms threshold
+2026-03-23T05:19:52.167484Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 1.796ms
+2026-03-23T05:19:52.169860Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 4.167ms
+2026-03-23T05:19:52.228984Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 13.284ms
+2026-03-23T05:19:52.276543Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 10.838ms
+2026-03-23T05:19:52.276557Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 10.968ms exceeds 1.000ms threshold
+2026-03-23T05:19:52.321534Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 5.834ms
+2026-03-23T05:19:52.367684Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 2.080ms exceeds 1.000ms threshold
+2026-03-23T05:19:52.367767Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 2.076ms
+2026-03-23T05:19:52.370288Z  WARN ThreadId(07) [WARN]  Task DataCompression scheduling drift: 4.599ms
+2026-03-23T05:19:52.430829Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 15.116ms
+2026-03-23T05:19:52.476979Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 11.267ms
+2026-03-23T05:19:52.477051Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 11.448ms exceeds 1.000ms threshold
+2026-03-23T05:19:52.522361Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 6.655ms
+2026-03-23T05:19:52.568731Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 3.130ms exceeds 1.000ms threshold
+2026-03-23T05:19:52.568799Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 3.115ms
+2026-03-23T05:19:52.570622Z  WARN ThreadId(07) [WARN]  Task DataCompression scheduling drift: 4.934ms
+2026-03-23T05:19:52.574327Z  WARN ThreadId(07) [WARN]  Task AntennaAlignment scheduling drift: 8.646ms
+2026-03-23T05:19:52.580289Z  WARN ThreadId(07) [WARN]  Task HealthMonitoring scheduling drift: 14.603ms
+2026-03-23T05:19:52.630445Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 14.749ms
+2026-03-23T05:19:52.675971Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 10.267ms
+2026-03-23T05:19:52.675997Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 10.403ms exceeds 1.000ms threshold
+2026-03-23T05:19:52.721620Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 5.922ms
+2026-03-23T05:19:52.768549Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 2.947ms exceeds 1.000ms threshold
+2026-03-23T05:19:52.769027Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 2.878ms
+2026-03-23T05:19:52.770328Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 4.645ms
+2026-03-23T05:19:52.830438Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 14.739ms
+2026-03-23T05:19:52.876939Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 11.240ms
+2026-03-23T05:19:52.876997Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 11.412ms exceeds 1.000ms threshold
+2026-03-23T05:19:52.923410Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 7.676ms
+2026-03-23T05:19:52.968596Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 2.997ms exceeds 1.000ms threshold
+2026-03-23T05:19:52.968673Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 2.926ms
+2026-03-23T05:19:52.970610Z  WARN ThreadId(09) [WARN]  Task DataCompression scheduling drift: 4.920ms
+2026-03-23T05:19:53.031230Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 15.531ms
+2026-03-23T05:19:53.077533Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 11.926ms exceeds 1.000ms threshold
+2026-03-23T05:19:53.077605Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 11.922ms
+2026-03-23T05:19:53.079501Z  WARN ThreadId(03) [WARN]  Task AntennaAlignment scheduling drift: 13.816ms
+2026-03-23T05:19:53.124767Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 9.070ms
+2026-03-23T05:19:53.170567Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 4.909ms exceeds 1.000ms threshold
+2026-03-23T05:19:53.171224Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 4.830ms
+2026-03-23T05:19:53.172669Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 6.982ms
+2026-03-23T05:19:53.217239Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 1.538ms
+2026-03-23T05:19:53.279168Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 13.469ms
+2026-03-23T05:19:53.279251Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 13.668ms exceeds 1.000ms threshold
+2026-03-23T05:19:53.325586Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 9.886ms
+2026-03-23T05:19:53.373317Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 7.633ms
+2026-03-23T05:19:53.373268Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 7.663ms exceeds 1.000ms threshold
+2026-03-23T05:19:53.374886Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 9.201ms
+2026-03-23T05:19:53.419329Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 3.624ms
+2026-03-23T05:19:53.481322Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 15.620ms
+2026-03-23T05:19:53.481325Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 15.736ms exceeds 1.000ms threshold
+2026-03-23T05:19:53.527854Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 12.151ms
+2026-03-23T05:19:53.574159Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 8.549ms exceeds 1.000ms threshold
+2026-03-23T05:19:53.574227Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 8.537ms
+2026-03-23T05:19:53.576533Z  WARN ThreadId(07) [WARN]  Task DataCompression scheduling drift: 10.841ms
+2026-03-23T05:19:53.580016Z  WARN ThreadId(07) [WARN]  Task AntennaAlignment scheduling drift: 14.332ms
+2026-03-23T05:19:53.585621Z  WARN ThreadId(07) [WARN]  Task HealthMonitoring scheduling drift: 19.933ms
+2026-03-23T05:19:53.621690Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 5.958ms
+2026-03-23T05:19:53.668274Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 2.687ms exceeds 1.000ms threshold
+2026-03-23T05:19:53.668268Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 2.568ms
+2026-03-23T05:19:53.730245Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 14.530ms
+2026-03-23T05:19:53.776579Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 10.974ms exceeds 1.000ms threshold
+2026-03-23T05:19:53.776695Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 10.999ms
+2026-03-23T05:19:53.779143Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 13.455ms
+2026-03-23T05:19:53.821714Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 5.981ms
+2026-03-23T05:19:53.868128Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 2.543ms exceeds 1.000ms threshold
+2026-03-23T05:19:53.868121Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 2.423ms
+2026-03-23T05:19:53.929362Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 13.650ms
+2026-03-23T05:19:53.975278Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 9.677ms exceeds 1.000ms threshold
+2026-03-23T05:19:53.975420Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 9.732ms
+2026-03-23T05:19:53.978305Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 12.620ms
+2026-03-23T05:19:54.020562Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 4.859ms
+2026-03-23T05:19:54.068004Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 2.378ms exceeds 1.000ms threshold
+2026-03-23T05:19:54.068140Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 2.401ms
+2026-03-23T05:19:54.070005Z  WARN ThreadId(02) [WARN]  Task AntennaAlignment scheduling drift: 4.317ms
+2026-03-23T05:19:54.129436Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 13.728ms
+2026-03-23T05:19:54.175217Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 9.529ms
+2026-03-23T05:19:54.175217Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 9.590ms exceeds 1.000ms threshold
+2026-03-23T05:19:54.177263Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 11.578ms
+2026-03-23T05:19:54.223028Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 7.332ms
+2026-03-23T05:19:54.268634Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 3.043ms exceeds 1.000ms threshold
+2026-03-23T05:19:54.268654Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 2.890ms
+2026-03-23T05:19:54.330942Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 15.222ms
+2026-03-23T05:19:54.377922Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 12.312ms exceeds 1.000ms threshold
+2026-03-23T05:19:54.378079Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 12.383ms
+2026-03-23T05:19:54.380968Z  WARN ThreadId(07) [WARN]  Task DataCompression scheduling drift: 15.279ms
+2026-03-23T05:19:54.425073Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 9.364ms
+2026-03-23T05:19:54.471747Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 6.141ms exceeds 1.000ms threshold
+2026-03-23T05:19:54.471852Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 6.164ms
+2026-03-23T05:19:54.518791Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 3.092ms
+2026-03-23T05:19:54.580829Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 15.143ms exceeds 1.000ms threshold
+2026-03-23T05:19:54.581671Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 15.079ms
+2026-03-23T05:19:54.583167Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 17.483ms
+2026-03-23T05:19:54.587036Z  WARN ThreadId(02) [WARN]  Task AntennaAlignment scheduling drift: 21.350ms
+2026-03-23T05:19:54.593232Z  WARN ThreadId(02) [WARN]  Task HealthMonitoring scheduling drift: 27.544ms
+2026-03-23T05:19:54.626929Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 11.214ms
+2026-03-23T05:19:54.673322Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 7.620ms
+2026-03-23T05:19:54.673334Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 7.748ms exceeds 1.000ms threshold
+2026-03-23T05:19:54.719632Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 3.934ms
+2026-03-23T05:19:54.782053Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 16.446ms exceeds 1.000ms threshold
+2026-03-23T05:19:54.782144Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 16.451ms
+2026-03-23T05:19:54.784510Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 18.822ms
+2026-03-23T05:19:54.829073Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 13.364ms
+2026-03-23T05:19:54.874829Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 9.244ms exceeds 1.000ms threshold
+2026-03-23T05:19:54.874808Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 9.110ms
+2026-03-23T05:19:54.921357Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 5.637ms
+2026-03-23T05:19:54.982113Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 16.500ms exceeds 1.000ms threshold
+2026-03-23T05:19:54.982287Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 16.581ms
+2026-03-23T05:19:54.984930Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 19.239ms
+2026-03-23T05:19:55.028419Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 12.724ms
+2026-03-23T05:19:55.074357Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 8.719ms exceeds 1.000ms threshold
+2026-03-23T05:19:55.074545Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 8.837ms
+2026-03-23T05:19:55.077106Z  WARN ThreadId(07) [WARN]  Task AntennaAlignment scheduling drift: 11.420ms
+2026-03-23T05:19:55.120450Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 4.754ms
+2026-03-23T05:19:55.182153Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 16.557ms exceeds 1.000ms threshold
+2026-03-23T05:19:55.182198Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 16.515ms
+2026-03-23T05:19:55.184094Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 18.407ms
+2026-03-23T05:19:55.228261Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 12.563ms
+2026-03-23T05:19:55.276047Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 10.333ms
+2026-03-23T05:19:55.276115Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 10.513ms exceeds 1.000ms threshold
+2026-03-23T05:19:55.322146Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 6.440ms
+2026-03-23T05:19:55.369111Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 3.505ms exceeds 1.000ms threshold
+2026-03-23T05:19:55.369974Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 3.432ms
+2026-03-23T05:19:55.371839Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 6.155ms
+2026-03-23T05:19:55.430552Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 14.843ms
+2026-03-23T05:19:55.476453Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 10.849ms exceeds 1.000ms threshold
+2026-03-23T05:19:55.476455Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 10.768ms
+2026-03-23T05:19:55.523228Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 7.531ms
+2026-03-23T05:19:55.570099Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 4.407ms
+2026-03-23T05:19:55.570088Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 4.485ms exceeds 1.000ms threshold
+2026-03-23T05:19:55.571856Z  WARN ThreadId(07) [WARN]  Task DataCompression scheduling drift: 6.163ms
+2026-03-23T05:19:55.575864Z  WARN ThreadId(07) [WARN]  Task AntennaAlignment scheduling drift: 10.177ms
+2026-03-23T05:19:55.581636Z  WARN ThreadId(07) [WARN]  Task HealthMonitoring scheduling drift: 15.950ms
+2026-03-23T05:19:55.632072Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 16.367ms
+2026-03-23T05:19:55.678016Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 12.311ms
+2026-03-23T05:19:55.678074Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 12.475ms exceeds 1.000ms threshold
+2026-03-23T05:19:55.724566Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 8.832ms
+2026-03-23T05:19:55.769993Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 4.390ms exceeds 1.000ms threshold
+2026-03-23T05:19:55.770132Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 4.444ms
+2026-03-23T05:19:55.772785Z  WARN ThreadId(09) [WARN]  Task DataCompression scheduling drift: 7.065ms
+2026-03-23T05:19:55.817058Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 1.356ms
+2026-03-23T05:19:55.879260Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 13.562ms
+2026-03-23T05:19:55.879265Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 13.679ms exceeds 1.000ms threshold
+2026-03-23T05:19:55.926294Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 10.594ms
+2026-03-23T05:19:55.971936Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 6.244ms
+2026-03-23T05:19:55.971886Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 6.290ms exceeds 1.000ms threshold
+2026-03-23T05:19:55.973984Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 8.299ms
+2026-03-23T05:19:56.018068Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 2.369ms
+2026-03-23T05:19:56.080394Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 14.779ms exceeds 1.000ms threshold
+2026-03-23T05:19:56.080593Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 14.893ms
+2026-03-23T05:19:56.083463Z  WARN ThreadId(02) [WARN]  Task AntennaAlignment scheduling drift: 17.772ms
+2026-03-23T05:19:56.127193Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 11.493ms
+2026-03-23T05:19:56.173103Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 7.494ms exceeds 1.000ms threshold
+2026-03-23T05:19:56.173159Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 7.474ms
+2026-03-23T05:19:56.174978Z  WARN ThreadId(09) [WARN]  Task DataCompression scheduling drift: 9.291ms
+2026-03-23T05:19:56.220330Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 4.628ms
+2026-03-23T05:19:56.267618Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 1.919ms
+2026-03-23T05:19:56.267632Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 2.046ms exceeds 1.000ms threshold
+2026-03-23T05:19:56.329444Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 13.746ms
+2026-03-23T05:19:56.375940Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 10.330ms exceeds 1.000ms threshold
+2026-03-23T05:19:56.376138Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 10.435ms
+2026-03-23T05:19:56.378329Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 12.636ms
+2026-03-23T05:19:56.421830Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 6.110ms
+2026-03-23T05:19:56.468546Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 2.850ms
+2026-03-23T05:19:56.468593Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 3.004ms exceeds 1.000ms threshold
+2026-03-23T05:19:56.528846Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 13.145ms
+2026-03-23T05:19:56.575872Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 10.178ms
+2026-03-23T05:19:56.575818Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 10.139ms exceeds 1.000ms threshold
+2026-03-23T05:19:56.577782Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 12.079ms
+2026-03-23T05:19:56.581587Z  WARN ThreadId(02) [WARN]  Task AntennaAlignment scheduling drift: 15.902ms
+2026-03-23T05:19:56.587684Z  WARN ThreadId(02) [WARN]  Task HealthMonitoring scheduling drift: 21.997ms
+2026-03-23T05:19:56.622282Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 6.578ms
+2026-03-23T05:19:56.668678Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 2.976ms
+2026-03-23T05:19:56.668731Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 3.141ms exceeds 1.000ms threshold
+2026-03-23T05:19:56.731050Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 15.346ms
+2026-03-23T05:19:56.778077Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 12.469ms exceeds 1.000ms threshold
+2026-03-23T05:19:56.778222Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 12.525ms
+2026-03-23T05:19:56.780912Z  WARN ThreadId(09) [WARN]  Task DataCompression scheduling drift: 15.223ms
+2026-03-23T05:19:56.824260Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 8.564ms
+2026-03-23T05:19:56.871424Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 5.831ms exceeds 1.000ms threshold
+2026-03-23T05:19:56.871473Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 5.717ms
+2026-03-23T05:19:56.918206Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 2.508ms
+2026-03-23T05:19:56.982371Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 16.768ms exceeds 1.000ms threshold
+2026-03-23T05:19:56.982364Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 16.671ms
+2026-03-23T05:19:56.984801Z  WARN ThreadId(07) [WARN]  Task DataCompression scheduling drift: 19.081ms
+2026-03-23T05:19:57.028654Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 12.952ms
+2026-03-23T05:19:57.095241Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 29.642ms exceeds 1.000ms threshold
+2026-03-23T05:19:57.097606Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 31.912ms
+2026-03-23T05:19:57.099868Z  WARN ThreadId(03) [WARN]  Task AntennaAlignment scheduling drift: 34.140ms
+2026-03-23T05:19:57.131540Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 15.842ms
+2026-03-23T05:19:57.178311Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 12.712ms exceeds 1.000ms threshold
+2026-03-23T05:19:57.178373Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 12.689ms
+2026-03-23T05:19:57.180114Z  WARN ThreadId(09) [WARN]  Task DataCompression scheduling drift: 14.422ms
+2026-03-23T05:19:57.224052Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 8.352ms
+2026-03-23T05:19:57.270252Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 4.553ms
+2026-03-23T05:19:57.270252Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 4.662ms exceeds 1.000ms threshold
+2026-03-23T05:19:57.330509Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 14.810ms
+2026-03-23T05:19:57.376179Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 10.580ms exceeds 1.000ms threshold
+2026-03-23T05:19:57.376214Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 10.530ms
+2026-03-23T05:19:57.378226Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 12.538ms
+2026-03-23T05:19:57.422697Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 6.990ms
+2026-03-23T05:19:57.470121Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 4.412ms
+2026-03-23T05:19:57.470121Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 4.523ms exceeds 1.000ms threshold
+2026-03-23T05:19:57.530354Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 14.659ms
+2026-03-23T05:19:57.575877Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 10.186ms
+2026-03-23T05:19:57.575904Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 10.317ms exceeds 1.000ms threshold
+2026-03-23T05:19:57.577592Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 11.903ms
+2026-03-23T05:19:57.581784Z  WARN ThreadId(03) [WARN]  Task AntennaAlignment scheduling drift: 16.098ms
+2026-03-23T05:19:57.587634Z  WARN ThreadId(03) [WARN]  Task HealthMonitoring scheduling drift: 21.905ms
+2026-03-23T05:19:57.623222Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 7.525ms
+2026-03-23T05:19:57.669524Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 3.826ms
+2026-03-23T05:19:57.669551Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 3.961ms exceeds 1.000ms threshold
+2026-03-23T05:19:57.730952Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 15.232ms
+2026-03-23T05:19:57.777797Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 12.194ms exceeds 1.000ms threshold
+2026-03-23T05:19:57.777880Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 12.182ms
+2026-03-23T05:19:57.780723Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 15.038ms
+2026-03-23T05:19:57.825131Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 9.429ms
+2026-03-23T05:19:57.871766Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 6.059ms
+2026-03-23T05:19:57.871785Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 6.195ms exceeds 1.000ms threshold
+2026-03-23T05:19:57.919259Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 3.539ms
+2026-03-23T05:19:57.980924Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 15.226ms
+2026-03-23T05:19:57.980821Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 15.216ms exceeds 1.000ms threshold
+2026-03-23T05:19:57.982840Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 17.154ms
+2026-03-23T05:19:58.028023Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 12.290ms
+2026-03-23T05:19:58.074342Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 8.732ms exceeds 1.000ms threshold
+2026-03-23T05:19:58.074547Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 8.845ms
+2026-03-23T05:19:58.077407Z  WARN ThreadId(07) [WARN]  Task AntennaAlignment scheduling drift: 11.723ms
+2026-03-23T05:19:58.120157Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 4.460ms
+2026-03-23T05:19:58.182241Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 16.611ms exceeds 1.000ms threshold
+2026-03-23T05:19:58.182699Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 16.547ms
+2026-03-23T05:19:58.183978Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 18.291ms
+2026-03-23T05:19:58.228067Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 12.371ms
+2026-03-23T05:19:58.273512Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 7.813ms
+2026-03-23T05:19:58.273521Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 7.934ms exceeds 1.000ms threshold
+2026-03-23T05:19:58.320979Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 5.272ms
+2026-03-23T05:19:58.367743Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 2.101ms exceeds 1.000ms threshold
+2026-03-23T05:19:58.368603Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 2.025ms
+2026-03-23T05:19:58.370010Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 4.317ms
+2026-03-23T05:19:58.429900Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 14.204ms
+2026-03-23T05:19:58.476438Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 10.734ms
+2026-03-23T05:19:58.477005Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 10.836ms exceeds 1.000ms threshold
+2026-03-23T05:19:58.521781Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 6.074ms
+2026-03-23T05:19:58.567820Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 2.217ms exceeds 1.000ms threshold
+2026-03-23T05:19:58.567843Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 2.154ms
+2026-03-23T05:19:58.571116Z  WARN ThreadId(09) [WARN]  Task DataCompression scheduling drift: 5.206ms
+2026-03-23T05:19:58.574774Z  WARN ThreadId(09) [WARN]  Task AntennaAlignment scheduling drift: 9.093ms
+2026-03-23T05:19:58.580470Z  WARN ThreadId(09) [WARN]  Task HealthMonitoring scheduling drift: 14.783ms
+2026-03-23T05:19:58.628853Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 13.158ms
+2026-03-23T05:19:58.675109Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 9.389ms
+2026-03-23T05:19:58.675170Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 9.568ms exceeds 1.000ms threshold
+2026-03-23T05:19:58.720741Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 5.034ms
+2026-03-23T05:19:58.768389Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 2.788ms exceeds 1.000ms threshold
+2026-03-23T05:19:58.768420Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 2.736ms
+2026-03-23T05:19:58.770456Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 4.770ms
+2026-03-23T05:19:58.831463Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 15.697ms
+2026-03-23T05:19:58.876930Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 11.236ms
+2026-03-23T05:19:58.876964Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 11.379ms exceeds 1.000ms threshold
+2026-03-23T05:19:58.922737Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 7.037ms
+2026-03-23T05:19:58.969400Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 3.717ms
+2026-03-23T05:19:58.969366Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 3.749ms exceeds 1.000ms threshold
+2026-03-23T05:19:58.970992Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 5.305ms
+2026-03-23T05:19:59.031698Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 15.996ms
+2026-03-23T05:19:59.077908Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 12.302ms exceeds 1.000ms threshold
+2026-03-23T05:19:59.078089Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 12.360ms
+2026-03-23T05:19:59.080983Z  WARN ThreadId(07) [WARN]  Task AntennaAlignment scheduling drift: 15.290ms
+2026-03-23T05:19:59.123280Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 7.583ms
+2026-03-23T05:19:59.169354Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 3.749ms exceeds 1.000ms threshold
+2026-03-23T05:19:59.169861Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 3.674ms
+2026-03-23T05:19:59.171865Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 6.132ms
+2026-03-23T05:19:59.231495Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 15.788ms
+2026-03-23T05:19:59.277430Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 11.732ms
+2026-03-23T05:19:59.277495Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 11.892ms exceeds 1.000ms threshold
+2026-03-23T05:19:59.323238Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 7.537ms
+2026-03-23T05:19:59.370077Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 4.421ms exceeds 1.000ms threshold
+2026-03-23T05:19:59.370618Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 4.347ms
+2026-03-23T05:19:59.372023Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 6.334ms
+2026-03-23T05:19:59.431797Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 16.095ms
+2026-03-23T05:19:59.478189Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 12.602ms exceeds 1.000ms threshold
+2026-03-23T05:19:59.478180Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 12.478ms
+2026-03-23T05:19:59.524517Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 8.818ms
+2026-03-23T05:19:59.570212Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 4.610ms exceeds 1.000ms threshold
+2026-03-23T05:19:59.571285Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 4.529ms
+2026-03-23T05:19:59.572801Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 7.119ms
+2026-03-23T05:19:59.576857Z  WARN ThreadId(03) [WARN]  Task AntennaAlignment scheduling drift: 11.176ms
+2026-03-23T05:19:59.582696Z  WARN ThreadId(03) [WARN]  Task HealthMonitoring scheduling drift: 17.007ms
+2026-03-23T05:19:59.632545Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 16.760ms
+2026-03-23T05:19:59.678434Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 12.725ms
+2026-03-23T05:19:59.678434Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 12.835ms exceeds 1.000ms threshold
+2026-03-23T05:19:59.724803Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 9.102ms
+2026-03-23T05:19:59.771653Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 6.010ms exceeds 1.000ms threshold
+2026-03-23T05:19:59.771664Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 5.976ms
+2026-03-23T05:19:59.774429Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 8.745ms
+2026-03-23T05:19:59.818309Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 2.601ms
+2026-03-23T05:19:59.881711Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 16.002ms
+2026-03-23T05:19:59.881998Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 16.381ms exceeds 1.000ms threshold
+2026-03-23T05:19:59.927185Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 11.478ms
+2026-03-23T05:19:59.974070Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 8.394ms exceeds 1.000ms threshold
+2026-03-23T05:19:59.975164Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 8.330ms
+2026-03-23T05:19:59.977002Z  WARN ThreadId(07) [WARN]  Task DataCompression scheduling drift: 11.320ms
+2026-03-23T05:20:00.020289Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 4.589ms
+2026-03-23T05:20:00.081674Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 16.064ms exceeds 1.000ms threshold
+2026-03-23T05:20:00.082513Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 15.985ms
+2026-03-23T05:20:00.084074Z  WARN ThreadId(06) [WARN]  Task AntennaAlignment scheduling drift: 18.389ms
+2026-03-23T05:20:00.129485Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 13.787ms
+2026-03-23T05:20:00.175287Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 9.686ms exceeds 1.000ms threshold
+2026-03-23T05:20:00.175347Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 9.663ms
+2026-03-23T05:20:00.177325Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 11.640ms
+2026-03-23T05:20:00.221358Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 5.658ms
+2026-03-23T05:20:00.268352Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 2.765ms exceeds 1.000ms threshold
+2026-03-23T05:20:00.268346Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 2.639ms
+2026-03-23T05:20:00.330654Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 14.955ms
+2026-03-23T05:20:00.378256Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 12.656ms exceeds 1.000ms threshold
+2026-03-23T05:20:00.378417Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 12.729ms
+2026-03-23T05:20:00.380810Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 15.125ms
+2026-03-23T05:20:00.424570Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 8.836ms
+2026-03-23T05:20:00.471110Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 5.410ms
+2026-03-23T05:20:00.471115Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 5.529ms exceeds 1.000ms threshold
+2026-03-23T05:20:00.517497Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 1.798ms
+2026-03-23T05:20:00.579376Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 13.777ms exceeds 1.000ms threshold
+2026-03-23T05:20:00.579670Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 13.975ms
+2026-03-23T05:20:00.582406Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 16.718ms
+2026-03-23T05:20:00.586053Z  WARN ThreadId(06) [WARN]  Task AntennaAlignment scheduling drift: 20.366ms
+2026-03-23T05:20:00.592053Z  WARN ThreadId(06) [WARN]  Task HealthMonitoring scheduling drift: 26.365ms
+2026-03-23T05:20:00.626320Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 10.614ms
+2026-03-23T05:20:00.672032Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 6.339ms
+2026-03-23T05:20:00.672141Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 6.556ms exceeds 1.000ms threshold
+2026-03-23T05:20:00.718169Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 2.471ms
+2026-03-23T05:20:00.780975Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 15.375ms exceeds 1.000ms threshold
+2026-03-23T05:20:00.781161Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 15.417ms
+2026-03-23T05:20:00.783533Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 17.844ms
+2026-03-23T05:20:00.826896Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 11.181ms
+2026-03-23T05:20:00.872780Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 7.073ms
+2026-03-23T05:20:00.872791Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 7.203ms exceeds 1.000ms threshold
+2026-03-23T05:20:00.919165Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 3.450ms
+2026-03-23T05:20:00.980840Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 15.238ms exceeds 1.000ms threshold
+2026-03-23T05:20:00.980936Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 15.241ms
+2026-03-23T05:20:00.982896Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 17.204ms
+2026-03-23T05:20:01.027534Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 11.830ms
+2026-03-23T05:20:01.073514Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 7.910ms exceeds 1.000ms threshold
+2026-03-23T05:20:01.073706Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 8.011ms
+2026-03-23T05:20:01.076527Z  WARN ThreadId(07) [WARN]  Task AntennaAlignment scheduling drift: 10.839ms
+2026-03-23T05:20:01.119950Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 4.249ms
+2026-03-23T05:20:01.166663Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 1.047ms exceeds 1.000ms threshold
+2026-03-23T05:20:01.168443Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 2.752ms
+2026-03-23T05:20:01.228166Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 12.467ms
+2026-03-23T05:20:01.274794Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 9.095ms
+2026-03-23T05:20:01.274820Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 9.235ms exceeds 1.000ms threshold
+2026-03-23T05:20:01.320364Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 4.656ms
+2026-03-23T05:20:01.367545Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 1.943ms exceeds 1.000ms threshold
+2026-03-23T05:20:01.367588Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 1.903ms
+2026-03-23T05:20:01.369832Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 4.143ms
+2026-03-23T05:20:01.429600Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 13.891ms
+2026-03-23T05:20:01.476145Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 10.443ms
+2026-03-23T05:20:01.476166Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 10.576ms exceeds 1.000ms threshold
+2026-03-23T05:20:01.523642Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 7.937ms
+2026-03-23T05:20:01.586292Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 20.600ms
+2026-03-23T05:20:01.586414Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 20.827ms exceeds 1.000ms threshold
+2026-03-23T05:20:01.587890Z  WARN ThreadId(07) [WARN]  Task DataCompression scheduling drift: 22.204ms
+2026-03-23T05:20:01.591847Z  WARN ThreadId(07) [WARN]  Task AntennaAlignment scheduling drift: 26.159ms
+2026-03-23T05:20:01.597919Z  WARN ThreadId(07) [WARN]  Task HealthMonitoring scheduling drift: 32.228ms
+2026-03-23T05:20:01.626622Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 10.918ms
+2026-03-23T05:20:01.673793Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 8.087ms
+2026-03-23T05:20:01.673793Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 8.202ms exceeds 1.000ms threshold
+2026-03-23T05:20:01.719754Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 4.055ms
+2026-03-23T05:20:01.780959Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 15.354ms exceeds 1.000ms threshold
+2026-03-23T05:20:01.781129Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 15.439ms
+2026-03-23T05:20:01.783356Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 17.668ms
+2026-03-23T05:20:01.827963Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 12.250ms
+2026-03-23T05:20:01.874679Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 8.985ms
+2026-03-23T05:20:01.874745Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 9.160ms exceeds 1.000ms threshold
+2026-03-23T05:20:01.921643Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 5.948ms
+2026-03-23T05:20:01.967476Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 1.874ms exceeds 1.000ms threshold
+2026-03-23T05:20:01.967532Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 1.847ms
+2026-03-23T05:20:01.969976Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 4.252ms
+2026-03-23T05:20:02.030434Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 14.721ms
+2026-03-23T05:20:02.076148Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 10.519ms exceeds 1.000ms threshold
+2026-03-23T05:20:02.076249Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 10.549ms
+2026-03-23T05:20:02.078857Z  WARN ThreadId(07) [WARN]  Task AntennaAlignment scheduling drift: 13.170ms
+2026-03-23T05:20:02.123137Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 7.434ms
+2026-03-23T05:20:02.168954Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 3.322ms exceeds 1.000ms threshold
+2026-03-23T05:20:02.169021Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 3.259ms
+2026-03-23T05:20:02.170851Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 5.163ms
+2026-03-23T05:20:02.230703Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 15.007ms
+2026-03-23T05:20:02.278247Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 12.551ms
+2026-03-23T05:20:02.278254Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 12.668ms exceeds 1.000ms threshold
+2026-03-23T05:20:02.323802Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 8.107ms
+2026-03-23T05:20:02.370337Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 4.741ms exceeds 1.000ms threshold
+2026-03-23T05:20:02.370430Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 4.746ms
+2026-03-23T05:20:02.373079Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 7.394ms
+2026-03-23T05:20:02.432536Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 16.842ms
+2026-03-23T05:20:02.478920Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 13.214ms
+2026-03-23T05:20:02.478940Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 13.341ms exceeds 1.000ms threshold
+2026-03-23T05:20:02.525896Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 10.193ms
+2026-03-23T05:20:02.571688Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 6.088ms exceeds 1.000ms threshold
+2026-03-23T05:20:02.571721Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 6.036ms
+2026-03-23T05:20:02.574073Z  WARN ThreadId(07) [WARN]  Task DataCompression scheduling drift: 8.386ms
+2026-03-23T05:20:02.577994Z  WARN ThreadId(07) [WARN]  Task AntennaAlignment scheduling drift: 12.308ms
+2026-03-23T05:20:02.583973Z  WARN ThreadId(07) [WARN]  Task HealthMonitoring scheduling drift: 18.284ms
+2026-03-23T05:20:02.632298Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 16.600ms
+2026-03-23T05:20:02.679539Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 13.855ms
+2026-03-23T05:20:02.679532Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 13.934ms exceeds 1.000ms threshold
+2026-03-23T05:20:02.724631Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 8.932ms
+2026-03-23T05:20:02.771310Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 5.625ms
+2026-03-23T05:20:02.771281Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 5.678ms exceeds 1.000ms threshold
+2026-03-23T05:20:02.772844Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 7.154ms
+2026-03-23T05:20:02.818087Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 2.388ms
+2026-03-23T05:20:02.880069Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 14.370ms
+2026-03-23T05:20:02.880071Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 14.474ms exceeds 1.000ms threshold
+2026-03-23T05:20:02.926113Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 10.414ms
+2026-03-23T05:20:02.972051Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 6.379ms exceeds 1.000ms threshold
+2026-03-23T05:20:02.972615Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 6.322ms
+2026-03-23T05:20:02.973932Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 8.242ms
+2026-03-23T05:20:03.018238Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 2.536ms
+2026-03-23T05:20:03.080363Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 14.764ms exceeds 1.000ms threshold
+2026-03-23T05:20:03.080454Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 14.766ms
+2026-03-23T05:20:03.082694Z  WARN ThreadId(02) [WARN]  Task AntennaAlignment scheduling drift: 17.004ms
+2026-03-23T05:20:03.126653Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 10.949ms
+2026-03-23T05:20:03.172985Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 7.383ms exceeds 1.000ms threshold
+2026-03-23T05:20:03.173021Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 7.336ms
+2026-03-23T05:20:03.175380Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 9.687ms
+2026-03-23T05:20:03.220020Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 4.320ms
+2026-03-23T05:20:03.281398Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 15.700ms
+2026-03-23T05:20:03.281450Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 15.862ms exceeds 1.000ms threshold
+2026-03-23T05:20:03.327061Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 11.355ms
+2026-03-23T05:20:03.374751Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 9.053ms
+2026-03-23T05:20:03.375196Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 9.157ms exceeds 1.000ms threshold
+2026-03-23T05:20:03.376197Z  WARN ThreadId(09) [WARN]  Task DataCompression scheduling drift: 10.511ms
+2026-03-23T05:20:03.419797Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 4.102ms
+2026-03-23T05:20:03.466712Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 1.013ms
+2026-03-23T05:20:03.466712Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 1.125ms exceeds 1.000ms threshold
+2026-03-23T05:20:03.528019Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 12.296ms
+2026-03-23T05:20:03.575287Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 9.685ms exceeds 1.000ms threshold
+2026-03-23T05:20:03.575890Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 9.605ms
+2026-03-23T05:20:03.577256Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 11.569ms
+2026-03-23T05:20:03.581059Z  WARN ThreadId(03) [WARN]  Task AntennaAlignment scheduling drift: 15.370ms
+2026-03-23T05:20:03.586636Z  WARN ThreadId(03) [WARN]  Task HealthMonitoring scheduling drift: 20.926ms
+2026-03-23T05:20:03.620996Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 5.286ms
+2026-03-23T05:20:03.668201Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 2.492ms
+2026-03-23T05:20:03.668230Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 2.643ms exceeds 1.000ms threshold
+2026-03-23T05:20:03.729768Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 14.069ms
+2026-03-23T05:20:03.776295Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 10.644ms exceeds 1.000ms threshold
+2026-03-23T05:20:03.776762Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 10.594ms
+2026-03-23T05:20:03.778153Z  WARN ThreadId(09) [WARN]  Task DataCompression scheduling drift: 12.464ms
+2026-03-23T05:20:03.822302Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 6.601ms
+2026-03-23T05:20:03.869103Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 3.402ms
+2026-03-23T05:20:03.869107Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 3.520ms exceeds 1.000ms threshold
+2026-03-23T05:20:03.931377Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 15.680ms
+2026-03-23T05:20:03.978390Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 12.791ms exceeds 1.000ms threshold
+2026-03-23T05:20:03.978485Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 12.785ms
+2026-03-23T05:20:03.980863Z  WARN ThreadId(03) [WARN]  Task DataCompression scheduling drift: 15.139ms
+2026-03-23T05:20:04.024866Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 9.167ms
+2026-03-23T05:20:04.071454Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 5.855ms exceeds 1.000ms threshold
+2026-03-23T05:20:04.071499Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 5.812ms
+2026-03-23T05:20:04.074179Z  WARN ThreadId(09) [WARN]  Task AntennaAlignment scheduling drift: 8.457ms
+2026-03-23T05:20:04.118199Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 2.503ms
+2026-03-23T05:20:04.180432Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 14.746ms
+2026-03-23T05:20:04.180396Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 14.796ms exceeds 1.000ms threshold
+2026-03-23T05:20:04.181929Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 16.240ms
+2026-03-23T05:20:04.226217Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 10.517ms
+2026-03-23T05:20:04.273092Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 7.395ms
+2026-03-23T05:20:04.273139Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 7.553ms exceeds 1.000ms threshold
+2026-03-23T05:20:04.319235Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 3.541ms
+2026-03-23T05:20:04.381992Z  WARN ThreadId(03) Sensor 1 CRITICAL JITTER: 16.388ms exceeds 1.000ms threshold
+2026-03-23T05:20:04.382027Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 16.344ms
+2026-03-23T05:20:04.383798Z  WARN ThreadId(02) [WARN]  Task DataCompression scheduling drift: 18.111ms
+2026-03-23T05:20:04.429273Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 13.575ms
+2026-03-23T05:20:04.476790Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 11.094ms
+2026-03-23T05:20:04.476790Z  WARN ThreadId(06) Sensor 1 CRITICAL JITTER: 11.204ms exceeds 1.000ms threshold
+2026-03-23T05:20:04.522953Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 7.254ms
+2026-03-23T05:20:04.569415Z  WARN ThreadId(09) Sensor 1 CRITICAL JITTER: 3.816ms exceeds 1.000ms threshold
+2026-03-23T05:20:04.569523Z  WARN ThreadId(06) [WARN]  Task ThermalControl scheduling drift: 3.840ms
+2026-03-23T05:20:04.571927Z  WARN ThreadId(06) [WARN]  Task DataCompression scheduling drift: 6.245ms
+2026-03-23T05:20:04.575808Z  WARN ThreadId(06) [WARN]  Task AntennaAlignment scheduling drift: 10.127ms
+2026-03-23T05:20:04.581836Z  WARN ThreadId(06) [WARN]  Task HealthMonitoring scheduling drift: 16.149ms
+2026-03-23T05:20:04.631417Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 15.721ms
+2026-03-23T05:20:04.678786Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 13.070ms
+2026-03-23T05:20:04.678829Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 13.233ms exceeds 1.000ms threshold
+2026-03-23T05:20:04.726307Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 10.608ms
+2026-03-23T05:20:04.773626Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 7.941ms
+2026-03-23T05:20:04.773611Z  WARN ThreadId(07) Sensor 1 CRITICAL JITTER: 8.008ms exceeds 1.000ms threshold
+2026-03-23T05:20:04.775664Z  WARN ThreadId(09) [WARN]  Task DataCompression scheduling drift: 9.980ms
+2026-03-23T05:20:04.820197Z  WARN ThreadId(02) [WARN]  Task ThermalControl scheduling drift: 4.500ms
+2026-03-23T05:20:04.881378Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 15.778ms exceeds 1.000ms threshold
+2026-03-23T05:20:04.881438Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 15.753ms
+2026-03-23T05:20:04.927015Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 11.288ms
+2026-03-23T05:20:04.974372Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 8.688ms
+2026-03-23T05:20:04.974346Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 8.747ms exceeds 1.000ms threshold
+2026-03-23T05:20:04.975966Z  WARN ThreadId(07) [WARN]  Task DataCompression scheduling drift: 10.280ms
+2026-03-23T05:20:05.021108Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 5.381ms
+2026-03-23T05:20:05.068413Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 2.812ms exceeds 1.000ms threshold
+2026-03-23T05:20:05.068484Z  WARN ThreadId(03) [WARN]  Task ThermalControl scheduling drift: 2.798ms
+2026-03-23T05:20:05.070758Z  WARN ThreadId(03) [WARN]  Task AntennaAlignment scheduling drift: 5.073ms
+2026-03-23T05:20:05.129205Z  WARN ThreadId(07) [WARN]  Task ThermalControl scheduling drift: 13.500ms
+2026-03-23T05:20:05.174083Z  WARN ThreadId(02) Sensor 1 CRITICAL JITTER: 8.477ms exceeds 1.000ms threshold
+2026-03-23T05:20:05.174158Z  WARN ThreadId(09) [WARN]  Task ThermalControl scheduling drift: 8.469ms
+2026-03-23T05:20:05.176385Z  WARN ThreadId(09) [WARN]  Task DataCompression scheduling drift: 10.696ms
+2026-03-23T05:20:05.194541Z  INFO ThreadId(01) Shutdown signal received
