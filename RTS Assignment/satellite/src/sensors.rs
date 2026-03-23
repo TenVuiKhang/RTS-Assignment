@@ -17,8 +17,8 @@ use std::hint::black_box; // Lab 2: Prevent optimization
 
 #[derive(Debug)]
 enum FaultKind {
-    Delayed,    // reading skipped — simulates sensor timeout
-    Corrupted,  // out-of-range value sent — simulates bad data
+    Delayed,    // reading skipped - simulates sensor timeout
+    Corrupted,  // out-of-range value sent - simulates bad data
 }
 
 impl FaultKind {
@@ -30,7 +30,7 @@ impl FaultKind {
     }
 }
 
-/// Out-of-range corrupt values — obviously wrong so ground can detect them
+/// Out-of-range corrupt values - obviously wrong so ground can detect them
 fn corrupt_value(sensor_type: &SensorType) -> f64 {
     match sensor_type {
         SensorType::Thermal  => 999.9,  // normal: 20-85C
@@ -125,7 +125,7 @@ pub fn spawn_sensor_task(
             // Capture the Tokio scheduled tick (used only for advancing expected_time)
             let tick_time = ticker.tick().await;
 
-            // Capture actual wall-clock wake time immediately — this reflects
+            // Capture actual wall-clock wake time immediately - this reflects
             // real OS scheduling delay. Tokio's tick_time is the *scheduled*
             // instant, so tick_time ≈ expected_time always, giving false 0ms jitter.
             let actual_wake = Instant::now();
@@ -137,13 +137,11 @@ pub fn spawn_sensor_task(
             let jitter_ms = if actual_wake > expected_time {
                 actual_wake.duration_since(expected_time).as_secs_f64() * 1000.0
             } else {
-                0.0 // woke early (rare) — count as no jitter
+                0.0 // woke early (rare) - count as no jitter
             };
 
-            {
-                let mut m = metrics.lock().await;
-                m.record_jitter(jitter_ms);
-            }
+            // Record jitter immediately - single lock, no other work inside
+            metrics.lock().await.record_jitter(jitter_ms);
 
             if matches!(sensor_type, SensorType::Thermal) && jitter_ms > jitter_threshold_ms {
                 warn!(
@@ -174,6 +172,7 @@ pub fn spawn_sensor_task(
                 Ok(_) => {
                     let latency_ms = send_start.elapsed().as_secs_f64() * 1000.0;
                     {
+                        // Single lock covers all post-send metric updates
                         let mut m = metrics.lock().await;
                         m.total_readings += 1;
                         m.record_latency(latency_ms);
@@ -182,7 +181,7 @@ pub fn spawn_sensor_task(
                         }
 
                         // ====================================================
-                        // FAULT RECOVERY — clear interlock and measure time
+                        // FAULT RECOVERY - clear interlock and measure time
                         // ====================================================
                         if m.interlock_active {
                             if let Some(inject_time) = m.fault_inject_time.take() {
@@ -193,12 +192,12 @@ pub fn spawn_sensor_task(
 
                                 if within_limit {
                                     info!(
-                                        "✅ Sensor {} fault recovered in {:.1}ms (limit: 200ms)",
+                                        "[OK] Sensor {} fault recovered in {:.1}ms (limit: 200ms)",
                                         sensor_id, recovery_ms
                                     );
                                 } else {
                                     error!(
-                                        "🚨 MISSION ABORT: Sensor {} recovery took {:.1}ms — exceeds 200ms limit!",
+                                        "[ALERT] MISSION ABORT: Sensor {} recovery took {:.1}ms - exceeds 200ms limit!",
                                         sensor_id, recovery_ms
                                     );
                                 }
@@ -271,7 +270,7 @@ pub fn spawn_fault_injector(
     tokio::spawn(async move {
         use rand::Rng;
 
-        // Grace period — no faults at startup
+        // Grace period - no faults at startup
         tokio::time::sleep(Duration::from_secs(60)).await;
 
         let mut fault_counter     = 0u64;
@@ -296,17 +295,17 @@ pub fn spawn_fault_injector(
                 {
                     let mut m = metrics.lock().await;
                     m.fault_count += 1;
-                    m.last_fault_description = format!(
+                    let desc = format!(
                         "CORRUPTED | Sensor {} ({:?}) | injected value: {:.1}",
                         chosen, sensor_type, bad_value
                     );
+                    m.fault_log.push(format!("[{}] #{:>3} {}", fault_time, fault_counter, desc));
+                    m.last_fault_description = desc;
                     m.last_fault_time = fault_time;
-                    // Activate interlock — blocks non-exempt commands until recovery
                     m.interlock_active = true;
                     m.interlock_reason = format!(
                         "Corrupted sensor {} ({:?}) data detected", chosen, sensor_type
                     );
-                    // Record inject time for recovery measurement
                     m.fault_inject_time = Some(std::time::Instant::now());
                 }
 
@@ -324,12 +323,13 @@ pub fn spawn_fault_injector(
                 {
                     let mut m = metrics.lock().await;
                     m.fault_count += 1;
-                    m.last_fault_description = format!(
+                    let desc = format!(
                         "DELAYED   | Sensor {} ({:?}) | reading skipped",
                         chosen, sensor_type
                     );
+                    m.fault_log.push(format!("[{}] #{:>3} {}", fault_time, fault_counter, desc));
+                    m.last_fault_description = desc;
                     m.last_fault_time = fault_time;
-                    // Activate interlock
                     m.interlock_active = true;
                     m.interlock_reason = format!(
                         "Delayed/missing sensor {} ({:?}) data", chosen, sensor_type

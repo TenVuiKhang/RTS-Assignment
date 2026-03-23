@@ -32,8 +32,9 @@ pub struct Metrics {
     // Fault tracking
     pub fault_count: u64,
     pub consecutive_thermal_misses: u8,
-    pub last_fault_description: String, // e.g. "CORRUPTED | Sensor 1 (Thermal) | value: 999.9"
-    pub last_fault_time: String,        // e.g. "14:32:05.123"
+    pub last_fault_description: String,
+    pub last_fault_time: String,
+    pub fault_log: Vec<String>, // full history of every injected fault
     
     // CPU utilization
     pub cpu_active_time_ms: u128,
@@ -46,7 +47,7 @@ pub struct Metrics {
     pub commands_processed: u64,
     pub commands_rejected: u64,
 
-    // Command latency (recv → ACK sent)
+    // Command latency (recv -> ACK sent)
     pub max_command_latency_ms: f64,
     pub command_latency_samples: Vec<f64>,
 
@@ -66,6 +67,7 @@ impl Metrics {
             jitter_samples: Vec::with_capacity(100),
             drift_samples: Vec::with_capacity(100),
             command_latency_samples: Vec::with_capacity(100),
+            fault_log: Vec::new(),
             interlock_active: false,
             interlock_reason: String::new(),
             last_fault_description: String::new(),
@@ -150,7 +152,7 @@ impl Metrics {
         }
     }
 
-    /// Record command round-trip latency (recv → ACK sent)
+    /// Record command round-trip latency (recv -> ACK sent)
     pub fn record_command_latency(&mut self, latency_ms: f64) {
         if latency_ms > self.max_command_latency_ms {
             self.max_command_latency_ms = latency_ms;
@@ -300,16 +302,16 @@ pub fn spawn_reporter(
 |              SATELLITE OCS  --  PERIODIC METRICS                 |
 +------------------------------------------------------------------+
 | SENSOR         Total: {tr:<10} Dropped: {dr:<10} Loss: {loss:.2}% |
-| TIMING         Avg Jitter: {aj:.3}ms    Max Jitter: {mj:.3}ms        |
-|                Avg Drift:  {ad:.3}ms    Max Drift:  {md:.3}ms       |
+| TIMING         Avg Jitter: {aj:.3}ms    Max Jitter: {mj:.3}ms       |
+|                Avg Drift:  {ad:.3}ms    Max Drift:  {md:.3}ms      |
 |                Max Latency (sensor->buf): {ml:.3}ms                |
 | DEADLINES      Missed: {miss:<10} Faults: {faults:<10}             |
 | BUFFER         Current: {cbf:.1}%      Peak: {pbf:.1}%                     |
 | CPU            Utilization: {cpu:.1}%   RM Schedulable: {sched}           |
 | NETWORK        Sent: {ps:<10} Failed: {pf:<10} Rate: {psr:.1}%  |
-| COMMANDS       Recv: {cr:<6} Processed: {cp:<6} Rejected: {rej:<6}      |
+| COMMANDS       Recv: {cr:<6} Processed: {cp:<6} Rejected: {rej:<6}   |
 |                Avg Cmd Latency: {acl:.3}ms  Max: {mcl:.3}ms            |
-| RECOVERY       Last: {lrt:.1}ms          Max: {mrt:.1}ms                  |
+| RECOVERY       Last: {lrt:.1}ms          Max: {mrt:.1}ms                   |
 +------------------------------------------------------------------+
 | STATUS
 {alerts}+------------------------------------------------------------------+

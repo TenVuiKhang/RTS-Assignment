@@ -72,7 +72,7 @@ pub fn spawn_scheduler(metrics: Arc<Mutex<Metrics>>) -> tokio::task::JoinHandle<
         let mut antenna_next     = Instant::now();
         let mut health_next      = Instant::now();
 
-        info!("📅 Task scheduler started (Rate Monotonic Scheduling)");
+        info!("[SCHED] Task scheduler started (Rate Monotonic Scheduling)");
         info!("   ThermalControl:   50ms period,   20ms deadline (OS timer limited)");
         info!("   DataCompression:  200ms period,  25ms deadline (OS timer limited)");
         info!("   AntennaAlignment: 500ms period,  30ms deadline (OS timer limited)");
@@ -130,7 +130,7 @@ pub fn spawn_scheduler(metrics: Arc<Mutex<Metrics>>) -> tokio::task::JoinHandle<
 async fn execute_task(task_type: TaskType, metrics: &Arc<Mutex<Metrics>>, drift_ms: f64) {
     let start = Instant::now();
 
-    debug!("⚙️  Executing task: {}", task_type.name());
+    debug!("[TASK]  Executing task: {}", task_type.name());
 
     // ============================================================
     // DRIFT MEASUREMENT (scheduled vs actual start time)
@@ -142,7 +142,7 @@ async fn execute_task(task_type: TaskType, metrics: &Arc<Mutex<Metrics>>, drift_
 
     if drift_ms > 1.0 {
         warn!(
-            "⚠️  Task {} scheduling drift: {:.3}ms",
+            "[WARN]  Task {} scheduling drift: {:.3}ms",
             task_type.name(), drift_ms
         );
     }
@@ -163,7 +163,7 @@ async fn execute_task(task_type: TaskType, metrics: &Arc<Mutex<Metrics>>, drift_
         let exceeded_by_ms = (execution_time - deadline).as_secs_f64() * 1000.0;
 
         warn!(
-            "⚠️  Task {} DEADLINE MISS: {:.3}ms > {}ms (exceeded by {:.3}ms)",
+            "[WARN]  Task {} DEADLINE MISS: {:.3}ms > {}ms (exceeded by {:.3}ms)",
             task_type.name(),
             execution_ms,
             task_type.deadline_ms(),
@@ -173,7 +173,7 @@ async fn execute_task(task_type: TaskType, metrics: &Arc<Mutex<Metrics>>, drift_
         metrics.lock().await.missed_deadlines += 1;
     } else {
         debug!(
-            "✅ Task {} completed: {:.3}ms / {}ms deadline",
+            "[OK] Task {} completed: {:.3}ms / {}ms deadline",
             task_type.name(),
             execution_ms,
             task_type.deadline_ms()

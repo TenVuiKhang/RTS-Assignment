@@ -14,7 +14,7 @@ use tracing::{info, warn, error, debug};
 use std::net::SocketAddr;
 
 // =============================================================================
-// TELEMETRY DOWNLINK (Satellite → Ground)
+// TELEMETRY DOWNLINK (Satellite -> Ground)
 // =============================================================================
 
 /// Spawn telemetry downlink task
@@ -37,7 +37,7 @@ pub fn spawn_downlink(
             }
         };
         
-        info!("📡 Telemetry downlink started → {}", ground_addr);
+        info!("[DOWNLINK] Telemetry downlink started -> {}", ground_addr);
         
         let mut packet_id = 0u64;
         
@@ -59,7 +59,7 @@ pub fn spawn_downlink(
                             // Check downlink deadline (30ms)
                             if latency_ms > downlink_deadline_ms as f64 {
                                 warn!(
-                                    "⚠️  Downlink packet {} exceeded {}ms deadline: {:.3}ms",
+                                    "[WARN]  Downlink packet {} exceeded {}ms deadline: {:.3}ms",
                                     packet_id, downlink_deadline_ms, latency_ms
                                 );
                                 metrics.lock().await.missed_deadlines += 1;
@@ -72,18 +72,18 @@ pub fn spawn_downlink(
                             }
                             
                             debug!(
-                                "📡 Sent telemetry #{} | {} bytes | latency: {:.3}ms",
+                                "[DOWNLINK] Sent telemetry #{} | {} bytes | latency: {:.3}ms",
                                 packet_id, sent_bytes, latency_ms
                             );
                         }
                         Err(e) => {
-                            error!("❌ Failed to send telemetry #{}: {}", packet_id, e);
+                            error!("[ERR] Failed to send telemetry #{}: {}", packet_id, e);
                             metrics.lock().await.packets_failed += 1;
                         }
                     }
                 }
                 Err(e) => {
-                    error!("❌ Failed to serialize telemetry: {}", e);
+                    error!("[ERR] Failed to serialize telemetry: {}", e);
                 }
             }
             
@@ -99,7 +99,7 @@ pub fn spawn_downlink(
             // Degraded mode warning
             if current_fill > degraded_threshold {
                 warn!(
-                    "⚠️  Buffer at {:.1}% - DEGRADED MODE (threshold: {:.1}%)",
+                    "[WARN]  Buffer at {:.1}% - DEGRADED MODE (threshold: {:.1}%)",
                     current_fill, degraded_threshold
                 );
             }
@@ -110,7 +110,7 @@ pub fn spawn_downlink(
 }
 
 // =============================================================================
-// COMMAND UPLINK (Ground → Satellite)
+// COMMAND UPLINK (Ground -> Satellite)
 // =============================================================================
 
 /// Spawn command uplink receiver task
@@ -132,7 +132,7 @@ pub fn spawn_uplink(
             }
         };
         
-        info!("📻 Command uplink started on {}", bind_addr);
+        info!("[UPLINK] Command uplink started on {}", bind_addr);
         info!("   Dead man's switch: {} seconds", dead_mans_switch_timeout.as_secs());
         
         let mut buffer = vec![0u8; 65535]; // Max UDP packet size
@@ -147,19 +147,19 @@ pub fn spawn_uplink(
             match timeout(dead_mans_switch_timeout, socket.recv_from(&mut buffer)).await {
                 Ok(Ok((len, addr))) => {
                     if contact_lost {
-                        info!("✅ Ground contact restored from {}", addr);
+                        info!("[OK] Ground contact restored from {}", addr);
                         contact_lost = false;
                     }
                     handle_command(&buffer[..len], addr, &socket, &metrics, urgent_deadline_ms).await;
                 }
                 Ok(Err(e)) => {
-                    error!("❌ Socket receive error: {}", e);
+                    error!("[ERR] Socket receive error: {}", e);
                 }
                 Err(_) => {
                     if !contact_lost {
                         // First timeout only — log and count once
                         error!(
-                            "🚨 CRITICAL ALERT: No ground contact for {} seconds - LOSS OF SIGNAL",
+                            "[ALERT] CRITICAL ALERT: No ground contact for {} seconds - LOSS OF SIGNAL",
                             dead_mans_switch_timeout.as_secs()
                         );
                         metrics.lock().await.fault_count += 1;
@@ -186,7 +186,7 @@ async fn handle_command(
     match CommandPacket::from_bytes(bytes) {
         Ok(cmd) => {
             info!(
-                "📥 Command #{} from {} | urgency: {:?}",
+                "[CMD] Command #{} from {} | urgency: {:?}",
                 cmd.command_id, addr, cmd.urgency
             );
 
@@ -216,7 +216,7 @@ async fn handle_command(
                     m.interlock_reason.clone()
                 };
                 warn!(
-                    "🔒 Command #{} REJECTED by safety interlock: {}",
+                    "[LOCK] Command #{} REJECTED by safety interlock: {}",
                     cmd.command_id, reason
                 );
                 metrics.lock().await.commands_rejected += 1;
@@ -231,14 +231,14 @@ async fn handle_command(
             let success = process_command(&cmd).await;
             let processing_ms = process_start.elapsed().as_secs_f64() * 1000.0;
 
-            // Full command latency: recv → ACK sent
+            // Full command latency: recv -> ACK sent
             let full_latency_ms = recv_time.elapsed().as_secs_f64() * 1000.0;
 
             // Check urgent command deadline (2ms)
             if matches!(cmd.urgency, CommandUrgency::Urgent | CommandUrgency::Emergency) {
                 if processing_ms > urgent_deadline_ms as f64 {
                     warn!(
-                        "⚠️  Urgent command #{} processing exceeded {}ms: {:.3}ms",
+                        "[WARN]  Urgent command #{} processing exceeded {}ms: {:.3}ms",
                         cmd.command_id, urgent_deadline_ms, processing_ms
                     );
                     metrics.lock().await.missed_deadlines += 1;
@@ -254,14 +254,14 @@ async fn handle_command(
             }
 
             debug!(
-                "📥 Command #{} latency: {:.3}ms (processing: {:.3}ms)",
+                "[CMD] Command #{} latency: {:.3}ms (processing: {:.3}ms)",
                 cmd.command_id, full_latency_ms, processing_ms
             );
 
             send_acknowledgment(socket, addr, cmd.command_id, success, processing_ms).await;
         }
         Err(e) => {
-            error!("❌ Failed to deserialize command from {}: {}", addr, e);
+            error!("[ERR] Failed to deserialize command from {}: {}", addr, e);
         }
     }
 }
@@ -272,36 +272,36 @@ async fn process_command(cmd: &CommandPacket) -> bool {
     
     match &cmd.payload {
         CommandPayload::HealthCheck => {
-            info!("✅ Health check OK");
+            info!("[OK] Health check OK");
             true
         }
         CommandPayload::SetMode { mode } => {
-            info!("🔄 Mode changed to: {:?}", mode);
+            info!("[RESET] Mode changed to: {:?}", mode);
             // In real system: actually change mode
             true
         }
         CommandPayload::SetSensorInterval { sensor_id, interval_ms } => {
-            info!("⚙️  Sensor {} interval → {}ms", sensor_id, interval_ms);
+            info!("[TASK]  Sensor {} interval -> {}ms", sensor_id, interval_ms);
             // In real system: update sensor configuration
             true
         }
         CommandPayload::ClearFault { fault_id } => {
-            info!("🔧 Cleared fault #{}", fault_id);
+            info!("[FIX] Cleared fault #{}", fault_id);
             // In real system: clear fault state
             true
         }
         CommandPayload::ResetSubsystem { subsystem } => {
-            info!("🔄 Resetting subsystem: {}", subsystem);
+            info!("[RESET] Resetting subsystem: {}", subsystem);
             // In real system: reset the subsystem
             true
         }
         CommandPayload::RequestData { data_type, time_range_seconds } => {
-            info!("📊 Data request: {} (range: {:?}s)", data_type, time_range_seconds);
+            info!("[DATA] Data request: {} (range: {:?}s)", data_type, time_range_seconds);
             // In real system: prepare data dump
             true
         }
         CommandPayload::EmergencyShutdown { reason } => {
-            error!("🚨 EMERGENCY SHUTDOWN: {}", reason);
+            error!("[ALERT] EMERGENCY SHUTDOWN: {}", reason);
             // In real system: initiate safe shutdown
             false
         }
@@ -335,7 +335,7 @@ async fn send_acknowledgment(
             if let Err(e) = socket.send_to(&bytes, addr).await {
                 error!("Failed to send ACK for command {}: {}", command_id, e);
             } else {
-                debug!("✅ Sent ACK for command #{}", command_id);
+                debug!("[OK] Sent ACK for command #{}", command_id);
             }
         }
         Err(e) => {
