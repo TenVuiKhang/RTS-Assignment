@@ -101,7 +101,7 @@ pub fn spawn_receiver(
                                 m.record_reception_latency(latency_ms);
                             }
 
-                            debug!("📥 Pkt #{} from {} | decode {:.3}ms | drift {:.3}ms",
+                            debug!("[DEBUG]  Packet #{} from {} | decode {:.3}ms | drift {:.3}ms",
                                 pkt.packet_id, src, decode_ms, drift_ms);
 
                             if telem_tx.send(pkt).await.is_err() {
