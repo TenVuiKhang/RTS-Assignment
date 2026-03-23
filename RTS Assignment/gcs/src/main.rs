@@ -126,7 +126,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         _ = reporter_task => error!("Metrics reporter terminated"),
         reason = shutdown_rx => {
             match reason {
-                Ok(r)  => error!("🛑 Auto-shutdown triggered: {}", r),
+                Ok(r)  => error!("Auto-shutdown initiated: {}", r),
                 Err(_) => error!("🛑 Shutdown channel dropped"),
             }
         }

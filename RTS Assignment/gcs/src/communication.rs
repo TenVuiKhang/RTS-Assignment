@@ -37,10 +37,10 @@ pub fn spawn_receiver(
             Err(e) => { error!("Failed to bind on {}: {}", bind, e); return; }
         };
 
-        info!("📡 Telemetry receiver on {}", bind);
-        info!("   Recv timeout:             {}ms (silence detection)", RECV_TIMEOUT_MS);
-        info!("   Loss-of-contact after:    {} consecutive timeouts", LOSS_OF_CONTACT_THRESHOLD);
-        info!("   Max reconnect attempts:   {}", RECONNECT_ATTEMPTS);
+        info!("[INFO]  Telemetry receiver on {}", bind);
+        info!("[INFO]   Recv timeout:             {}ms (silence detection)", RECV_TIMEOUT_MS);
+        info!("[INFO]   Loss-of-contact after:    {} consecutive timeouts", LOSS_OF_CONTACT_THRESHOLD);
+        info!("[INFO]   Max reconnect attempts:   {}", RECONNECT_ATTEMPTS);
 
         let mut buf                   = vec![0u8; 65535];
         let mut expected_arrival      = Instant::now() + Duration::from_millis(EXPECTED_INTERVAL_MS);
@@ -105,12 +105,12 @@ pub fn spawn_receiver(
                                 pkt.packet_id, src, decode_ms, drift_ms);
 
                             if telem_tx.send(pkt).await.is_err() {
-                                error!("Telemetry channel closed");
+                                error!("[ERROR]    Telemetry channel closed");
                                 break 'recv;
                             }
                         }
                         Err(e) => {
-                            error!("❌ Decode error from {}: {}", src, e);
+                            error!("[ERROR]    Decode error from {}: {}", src, e);
                             metrics.lock().await.decode_errors += 1;
                             consecutive_misses += 1;
                         }
@@ -126,20 +126,20 @@ pub fn spawn_receiver(
 
                 // ── Socket error ─────────────────────────────────────────
                 Ok(Err(e)) => {
-                    error!("❌ Socket error: {}", e);
+                    error!("[ERROR]    Socket error: {}", e);
                     consecutive_misses += 1;
                 }
             }
 
             // ── Loss of contact → reconnect loop ─────────────────────────
             if consecutive_misses >= LOSS_OF_CONTACT_THRESHOLD {
-                error!("🚨 LOSS OF CONTACT after {} missed heartbeats", consecutive_misses);
+                error!("[ERROR]    LOSS OF CONTACT after {} missed heartbeats", consecutive_misses);
                 metrics.lock().await.loss_of_contact_events += 1;
                 consecutive_misses = 0;
 
                 loop {
                     reconnect_attempts += 1;
-                    warn!("🔄 Reconnect attempt {}/{} — waiting {}ms...",
+                    warn!("[WARN]   Reconnect attempt {}/{} — waiting {}ms...",
                         reconnect_attempts, RECONNECT_ATTEMPTS, RECONNECT_WAIT_MS);
                     sleep(Duration::from_millis(RECONNECT_WAIT_MS)).await;
 
@@ -156,7 +156,7 @@ pub fn spawn_receiver(
 
                     match timeout(Duration::from_secs(1), socket.recv_from(&mut buf)).await {
                         Ok(Ok((len, _))) if TelemetryPacket::from_bytes(&buf[..len]).is_ok() => {
-                            info!("✅ Reconnected to OCS after {} attempt(s)", reconnect_attempts);
+                            info!("[INFO]  Reconnected to OCS after {} attempt(s)", reconnect_attempts);
                             reconnect_attempts = 0;
                             consecutive_misses = 0;
                             expected_arrival   = Instant::now()
@@ -167,7 +167,7 @@ pub fn spawn_receiver(
                     }
 
                     if reconnect_attempts >= RECONNECT_ATTEMPTS {
-                        error!("💀 GCS SHUTDOWN: OCS unreachable after {} attempts",
+                        error!("[ERROR]    GCS SHUTDOWN: OCS unreachable after {} attempts",
                             RECONNECT_ATTEMPTS);
                         if let Some(tx) = shutdown_tx.take() {
                             let _ = tx.send("OCS unreachable — max reconnects exceeded");
@@ -178,7 +178,7 @@ pub fn spawn_receiver(
             }
         }
 
-        info!("Telemetry receiver task terminated");
+        info!("[INFO]  Telemetry receiver task terminated");
     })
 }
 
@@ -201,7 +201,7 @@ async fn send_rerequest(
     };
     if let Ok(bytes) = cmd.to_bytes() {
         if socket.send_to(&bytes, satellite_addr).await.is_ok() {
-            info!("📤 Re-request #{}-{} (cmd #{})", from_id, to_id, id);
+            info!("[INFO]  Re-request #{}-{} (cmd #{})", from_id, to_id, id);
             metrics.lock().await.rerequests_sent += 1;
             *id += 1;
         }

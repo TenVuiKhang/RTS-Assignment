@@ -25,10 +25,10 @@ pub fn spawn_uplink(
     tokio::spawn(async move {
         let socket = match UdpSocket::bind("0.0.0.0:0").await {
             Ok(s)  => s,
-            Err(e) => { error!("Failed to create uplink socket: {}", e); return; }
+            Err(e) => { error!("[ERROR]    Failed to create uplink socket: {}", e); return; }
         };
 
-        info!("📤 Command uplink ready → {}", addr);
+        info!("[INFO]  Command uplink ready → {}", addr);
 
         while let Some(scheduled) = cmd_rx.recv().await {
             let cmd       = &scheduled.packet;
@@ -67,7 +67,7 @@ pub fn spawn_uplink(
                                 m.record_dispatch_latency(dispatch_ms);
                             }
 
-                            debug!("📤 Sent cmd #{} ({:?}) {} bytes | dispatch {:.3}ms | jitter {:.3}ms",
+                            debug!("[INFO]  Sent cmd #{} ({:?}) {} bytes | dispatch {:.3}ms | jitter {:.3}ms",
                                 cmd.command_id, cmd.urgency, n, dispatch_ms, jitter_ms);
 
                             // Only wait for ACK if the channel is empty —
@@ -75,22 +75,22 @@ pub fn spawn_uplink(
                             if cmd_rx.is_empty() {
                                 await_ack(&socket, cmd.command_id, &metrics).await;
                             } else {
-                                debug!("⏩ Skipping ACK wait for cmd #{} — channel has pending commands",
+                                debug!("[INFO]  Skipping ACK wait for cmd #{} — channel has pending commands",
                                     cmd.command_id);
                                 metrics.lock().await.acks_missed += 1;
                             }
                         }
                         Err(e) => {
-                            error!("❌ Send cmd #{} failed: {}", cmd.command_id, e);
+                            error!("[ERROR]    Send cmd #{} failed: {}", cmd.command_id, e);
                             metrics.lock().await.commands_failed += 1;
                         }
                     }
                 }
-                Err(e) => error!("❌ Serialize cmd #{} failed: {}", cmd.command_id, e),
+                Err(e) => error!("[ERROR]    Serialize cmd #{} failed: {}", cmd.command_id, e),
             }
         }
 
-        info!("Uplink task terminated");
+        info!("[INFO]  Uplink task terminated");
     })
 }
 
@@ -102,9 +102,9 @@ async fn await_ack(socket: &UdpSocket, cmd_id: u64, metrics: &Arc<Mutex<GcsMetri
                 if let TelemetryPayload::CommandAck { command_id, success, execution_time_ms, message } = pkt.payload {
                     if command_id == cmd_id {
                         if success {
-                            info!("✅ ACK cmd #{}: {:.3}ms — {}", cmd_id, execution_time_ms, message);
+                            info!("[INFO]  ACKNOWLEDGE cmd #{}: {:.3}ms — {}", cmd_id, execution_time_ms, message);
                         } else {
-                            warn!("❌ NACK cmd #{}: {}", cmd_id, message);
+                            warn!("[WARN]   NOT ACKNOWLEDGE cmd #{}: {}", cmd_id, message);
                             metrics.lock().await.commands_nacked += 1;
                         }
                         metrics.lock().await.acks_received += 1;
@@ -112,7 +112,7 @@ async fn await_ack(socket: &UdpSocket, cmd_id: u64, metrics: &Arc<Mutex<GcsMetri
                 }
             }
         }
-        Ok(Err(e)) => debug!("ACK recv error cmd #{}: {}", cmd_id, e),
+        Ok(Err(e)) => debug!("[DEBUG]  ACKNOWLEDGE recv error cmd #{}: {}", cmd_id, e),
         Err(_)     => {
             warn!("[WARN]   No ACKNOWLEDGE for cmd #{} within {}ms", cmd_id, ACK_TIMEOUT_MS);
             metrics.lock().await.acks_missed += 1;

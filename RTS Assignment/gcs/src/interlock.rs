@@ -68,7 +68,7 @@ pub async fn check(
 ) -> InterlockDecision {
     // Emergency always passes
     if matches!(cmd.urgency, CommandUrgency::Emergency) {
-        info!("[INFO]   ⚡ Emergency cmd #{} bypasses interlock", cmd.command_id);
+        info!("[INFO]   Emergency cmd #{} bypasses interlock", cmd.command_id);
         return InterlockDecision::Approved;
     }
 

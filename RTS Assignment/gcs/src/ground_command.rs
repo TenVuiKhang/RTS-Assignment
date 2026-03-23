@@ -40,7 +40,7 @@ impl GcsBrainState {
 
     fn request_engage(&mut self, reason: &str, fault_type: FaultType, severity: AlertSeverity) {
         if !self.interlock_active {
-            warn!("🔒 Brain requesting interlock: {}", reason);
+            warn!("[WARN]  Command requesting interlock: {}", reason);
             self.interlock_active  = true;
             self.pending_interlock = Some((reason.to_string(), ActiveFault {
                 fault_type,
@@ -52,7 +52,7 @@ impl GcsBrainState {
 
     fn request_release(&mut self) {
         if self.interlock_active {
-            info!("🔓 Brain requesting interlock release");
+            info!("[INFO]  Command requesting interlock release");
             self.interlock_active         = false;
             self.should_release_interlock = true;
         }
@@ -77,10 +77,10 @@ pub fn analyse(pkt: &TelemetryPacket, state: &mut GcsBrainState) -> Option<Comma
 
         TelemetryPayload::CommandAck { success, message, .. } => {
             if *success {
-                info!("OCS ACKNOWLEDGE: {}", message);
+                info!("[INFO]  OCS ACKNOWLEDGE: {}", message);
                 state.request_release();
             } else {
-                warn!("OCS NOT ACKNOWLEDGE: {}", message);
+                warn!("[WARN]   OCS NOT ACKNOWLEDGE: {}", message);
             }
             None
         }
@@ -92,16 +92,16 @@ fn analyse_sensor(sensor_type: &SensorType, value: f64, state: &mut GcsBrainStat
     match sensor_type {
         SensorType::Thermal => {
             if value > THERMAL_HIGH_C {
-                warn!("Thermal HIGH {:.1}°C — slowing sample rate", value);
+                warn!("[WARN]   Thermal HIGH {:.1}°C — slowing sample rate", value);
                 state.request_engage("Thermal above threshold", FaultType::ThermalAnomaly, AlertSeverity::Warning);
                 Some(cmd(state.next_id(), CommandUrgency::Urgent,
                     CommandPayload::SetSensorInterval { sensor_id: 1, interval_ms: THERMAL_SLOW_MS }))
             } else if value < THERMAL_LOW_C {
-                info!("Thermal LOW {:.1}°C — increasing sample rate", value);
+                info!("[INFO]  Thermal LOW {:.1}°C — increasing sample rate", value);
                 Some(cmd(state.next_id(), CommandUrgency::Routine,
                     CommandPayload::SetSensorInterval { sensor_id: 1, interval_ms: THERMAL_FAST_MS }))
             } else if state.interlock_active {
-                info!("Thermal normal {:.1}°C — restoring baseline", value);
+                info!("[INFO]  Thermal normal {:.1}°C — restoring baseline", value);
                 state.request_release();
                 Some(cmd(state.next_id(), CommandUrgency::Routine,
                     CommandPayload::SetSensorInterval { sensor_id: 1, interval_ms: THERMAL_NORMAL_MS }))
@@ -111,12 +111,12 @@ fn analyse_sensor(sensor_type: &SensorType, value: f64, state: &mut GcsBrainStat
         }
         SensorType::Power => {
             if value < POWER_LOW_V {
-                warn!("POWER LOW {:.2}V — switching to Degraded", value);
+                warn!("[WARN]   POWER LOW {:.2}V — switching to Degraded", value);
                 state.request_engage("Low voltage", FaultType::SensorFailure, AlertSeverity::Warning);
                 Some(cmd(state.next_id(), CommandUrgency::Urgent,
                     CommandPayload::SetMode { mode: SystemMode::Degraded }))
             } else if value > POWER_HIGH_V && state.interlock_active {
-                info!("POWER restored {:.2}V — returning to Normal", value);
+                info!("[INFO]  POWER restored {:.2}V — returning to Normal", value);
                 state.request_release();
                 Some(cmd(state.next_id(), CommandUrgency::Routine,
                     CommandPayload::SetMode { mode: SystemMode::Normal }))
@@ -132,7 +132,7 @@ fn analyse_sensor(sensor_type: &SensorType, value: f64, state: &mut GcsBrainStat
 fn analyse_health(buffer_fill: f32, mode: &SystemMode, state: &mut GcsBrainState) -> Option<CommandPacket> {
     if buffer_fill > BUFFER_DEGRADED_PCT {
         if !matches!(state.last_system_mode, Some(SystemMode::Degraded)) {
-            warn!("BUFFER {:.1}% — requesting Degraded mode", buffer_fill);
+            warn!("[WARN]   BUFFER {:.1}% — requesting Degraded mode", buffer_fill);
             state.last_system_mode = Some(SystemMode::Degraded);
             state.request_engage("Buffer overflow threshold", FaultType::BufferOverflow, AlertSeverity::Warning);
             return Some(cmd(state.next_id(), CommandUrgency::Urgent,
@@ -153,7 +153,7 @@ fn analyse_fault(
     description: &str,
     state:       &mut GcsBrainState,
 ) -> Option<CommandPacket> {
-    warn!("FAULT [{:?}]: {}", severity, description);
+    warn!("[WARN]   FAULT [{:?}]: {}", severity, description);
     state.request_engage(description, fault_type.clone(), severity.clone());
 
     let urgency = if matches!(severity, AlertSeverity::Critical) {
