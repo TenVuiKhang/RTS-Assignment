@@ -4,7 +4,7 @@ mod protocol;
 mod metrics;
 mod communication;
 mod scheduler;
-mod commands;
+mod ground_command;
 mod interlock;
 mod uplink;
 
@@ -42,21 +42,23 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let (brain_tx, brain_rx)     = mpsc::channel::<scheduler::ScheduledCommand>(64);
     // merged channel → uplink
     let (merged_tx, merged_rx)   = mpsc::channel::<scheduler::ScheduledCommand>(128);
+    // communication → main  (fires when GCS gives up reconnecting)
+    let (shutdown_tx, shutdown_rx) = tokio::sync::oneshot::channel::<&str>();
 
     info!("  Starting subsystems...");
 
     // ── 1. Telemetry receiver ─────────────────────────────────────────────
     let comm_task = communication::spawn_receiver(
-        gcs_bind_addr, satellite_addr, telem_tx, metrics.clone(),
+        gcs_bind_addr, satellite_addr, telem_tx, metrics.clone(), shutdown_tx,
     );
 
-    // ── 2. Command Center ──────────────────────────────────────────────────
+    // ── 2. Command brain ──────────────────────────────────────────────────
     let brain_metrics   = metrics.clone();
     let brain_interlock = interlock_state.clone();
     let brain_task = tokio::spawn(async move {
-        let mut state = commands::GcsBrainState::new();
+        let mut state = ground_command::GcsBrainState::new();
         while let Some(pkt) = telem_rx.recv().await {
-            if let Some(cmd) = commands::analyse(&pkt, &mut state) {
+            if let Some(cmd) = ground_command::analyse(&pkt, &mut state) {
                 // Handle interlock signals BEFORE sending the command
                 if state.should_release_interlock {
                     interlock::release(&brain_interlock, &brain_metrics).await;
@@ -122,12 +124,21 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         _ = fanin_task    => error!("Fan-in terminated"),
         _ = uplink_task   => error!("Uplink terminated"),
         _ = reporter_task => error!("Metrics reporter terminated"),
+        reason = shutdown_rx => {
+            match reason {
+                Ok(r)  => error!("🛑 Auto-shutdown triggered: {}", r),
+                Err(_) => error!("🛑 Shutdown channel dropped"),
+            }
+        }
         _ = tokio::signal::ctrl_c() => info!("Shutdown signal received"),
     }
 
     let m = metrics.lock().await;
     info!("=================================================");
-    info!("  FINAL GCS METRICS:\n{}", m.summary());
+    info!("  GROUND CONTROL STATION — SHUTDOWN SUMMARY");
+    info!("=================================================");
+    info!("\n{}", m.summary());
+    info!("\n{}", m.rejection_report());
     info!("=================================================");
 
     Ok(())
